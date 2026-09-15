@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نفّذ مهام حقيقية واحصل على عمولات | Hero Tasks</title>
+  <meta name="description" content="شارك في مهام رقمية مع Hero Tasks واحصل على عمولات مقابل المهام المدفوعة المعتمدة." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-dark: #4c1d95;
+      --accent: #0ea5e9;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 800;
+    }
+
+    .logo-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 1.2rem;
+    }
+
+    .logo small {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 12px;
+      padding: 0.85rem 1.2rem;
+      font-weight: 700;
+      transition: 0.2s ease;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(109, 40, 217, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(109, 40, 217, 0.32);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-small {
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .email-link {
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .email-link:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      padding: 5rem 0 4rem;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.12), transparent 35%),
+        radial-gradient(circle at 90% 10%, rgba(109, 40, 217, 0.12), transparent 35%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: var(--primary);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .lead {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.8rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .hero-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 1.2rem;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-stack {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .mini-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem;
+      border-radius: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .mini-card span {
+      display: grid;
+      place-items: center;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    .mini-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .section {
+      padding: 4.5rem 0;
+    }
+
+    .section-alt {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-head p {
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.25rem;
+    }
+
+    .card ul {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      color: var(--muted);
+    }
+
+    .card li::before {
+      content: "✓";
+      color: var(--primary);
+      font-weight: 800;
+      margin-inline-end: 0.5rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.3rem;
+    }
+
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .step h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .terms-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+
+    .term-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.4rem;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.04);
+    }
+
+    .term-card h3 {
+      margin-bottom: 0.7rem;
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+    }
+
+    .term-card p,
+    .term-card li {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .term-card ul {
+      padding-inline-start: 1.2rem;
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .term-card strong {
+      color: var(--text);
+    }
+
+    .alert {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      border-radius: 16px;
+      padding: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .danger-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      border-radius: 16px;
+      padding: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .cta {
+      padding: 5rem 0;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--accent));
+      color: #fff;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin-bottom: 0.8rem;
+    }
+
+    .cta p {
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .cta .btn {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta .email-link {
+      color: #fff;
+    }
+
+    footer {
+      padding: 2rem 0;
+      background: #0f172a;
+      color: #cbd5e1;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .cards,
+      .terms-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 3rem 0;
+      }
+
+      .section {
+        padding: 3rem 0;
+      }
+
+      .hero-actions .btn,
+      .action-row .btn {
+        width: 100%;
+      }
+
+      .action-row {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="#">
+        <span class="logo-mark">H</span>
+        <span>
+          هيرو تاسك
+          <small>Hero Tasks</small>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#tasks">المهام</a>
+        <a href="#how">كيف تبدأ؟</a>
+        <a href="#terms">الشروط</a>
+        <a href="#start">ابدأ الآن</a>
+      </nav>
+
+      <a class="btn btn-primary btn-small" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">
+        ابدأ عبر Telegram
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="badge">انضم إلى منفذي المهام</span>
+
+          <h1>نفّذ مهام حقيقية واحصل على عمولات</h1>
+
+          <p class="lead">شارك في مهام رقمية واحصل على عمولات من المنصة</p>
+
+          <p>
+            تتيح لك <strong>Hero Tasks</strong> تنفيذ مهام رقمية لمساعدة الشركات وأصحاب المواقع
+            والتطبيقات على اختبار منتجاتهم وحملاتهم، والحصول على عمولات مقابل المهام المدفوعة المعتمدة.
+          </p>
+
+          <div class="hero-actions action-row">
+            <a class="btn btn-primary" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">
+              ابدأ عبر Telegram
+            </a>
+
+            <a class="email-link" href="mailto:info@hero1.vip">
+              ✉ info@hero1.vip
+            </a>
+          </div>
+
+          <div class="hero-points">
+            <span>✓ التسجيل مجاني حاليًا</span>
+            <span>✓ مهام مدفوعة معتمدة</span>
+            <span>✓ سحب وفق دورة الدفع</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="card-stack">
+            <div class="mini-card">
+              <span>1</span>
+              <div>
+                <strong>التسجيل</strong>
+                <p>ابدأ من Telegram وأدخل بيانات التسجيل المطلوبة، بما في ذلك الاسم والدولة.</p>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <span>2</span>
+              <div>
+                <strong>تفعيل الحساب</strong>
+                <p>تتم مراجعة بياناتك من المشرف، ثم يتم تفعيل حسابك.</p>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <span>3</span>
+              <div>
+                <strong>عرض المهام</strong>
+                <p>بعد التفعيل، يمكنك استخدام البوت لعرض المهام المتاحة لك.</p>
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <span>4</span>
+              <div>
+                <strong>المراجعة والاعتماد</strong>
+                <p>يراجع المشرف التنفيذ، وعند قبول المهمة يتم اعتمادها وإضافة العمولة.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tasks -->
+    <section class="section" id="tasks">
+      <div class="container">
+        <div class="section-head">
+          <h2>قد تشمل المهام</h2>
+          <p>مهام رقمية متنوعة حسب طلبات العملاء ومتطلبات كل مهمة.</p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <h3>مهام الاختبار والتحقق</h3>
+            <ul>
+              <li>اختبار موقع أو تطبيق</li>
+              <li>تنفيذ خطوات محددة وإرسال Screenshot</li>
+              <li>تقييم تجربة مستخدم</li>
+              <li>التحقق من معلومات نشاط تجاري</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>مهام الأبحاث والحملات</h3>
+            <ul>
+              <li>المشاركة في أبحاث السوق</li>
+              <li>تجربة صفحات أو حملات</li>
+              <li>مهام رقمية أخرى حسب طلب العملاء</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to start -->
+    <section class="section section-alt" id="how">
+      <div class="container">
+        <div class="section-head">
+          <h2>كيف تبدأ؟</h2>
+          <p>ست خطوات واضحة من التسجيل حتى اعتماد العمولة.</p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <h3>التسجيل</h3>
+            <p>ابدأ من Telegram وأدخل بيانات التسجيل المطلوبة، بما في ذلك الاسم والدولة.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <h3>تفعيل الحساب</h3>
+            <p>تتم مراجعة بياناتك من المشرف، ثم يتم تفعيل حسابك.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <h3>عرض المهام</h3>
+            <p>بعد التفعيل، يمكنك استخدام البوت لعرض المهام المتاحة لك.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <h3>تنفيذ المهمة</h3>
+            <p>اختر المهمة المناسبة، واقرأ التعليمات ونفذ جميع الخطوات المطلوبة خلال المهلة المحددة.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <h3>إرسال الإثبات</h3>
+            <p>إذا كانت المهمة تتطلب Screenshot أو إثباتًا، أرسله بالطريقة المحددة في تعليمات المهمة.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">6</div>
+            <h3>المراجعة والاعتماد</h3>
+            <p>يراجع المشرف التنفيذ، وعند قبول المهمة يتم اعتمادها وإضافة العمولة إذا كانت المهمة مدفوعة.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Terms -->
+    <section class="section" id="terms">
+      <div class="container">
+        <div class="section-head">
+          <h2>شروط استخدام المنصة للأعضاء</h2>
+          <p>يرجى قراءة الشروط التالية قبل التسجيل وتنفيذ المهام.</p>
+        </div>
+
+        <div class="terms-grid">
+          <article class="term-card">
+            <h3>التسجيل</h3>
+            <p>التسجيل في Hero Tasks مجاني حاليًا.</p>
+            <p>يجب تقديم بيانات صحيحة عند التسجيل، بما في ذلك الاسم والدولة.</p>
+            <p>تحتفظ المنصة بحق رفض أو تعليق أي حساب يخالف شروط الاستخدام.</p>
+          </article>
+
+          <article class="term-card">
+            <h3>لا توجد رسوم اشتراك حاليًا</h3>
+            <p><strong>لا تفرض Hero Tasks حاليًا رسوم اشتراك على الأعضاء.</strong></p>
+            <p>وقد تتغير هذه السياسة مستقبلًا مع تطور المنصة.</p>
+          </article>
+
+          <article class="term-card">
+            <h3>المهام الإلزامية بدون عمولة</h3>
+            <p>
+              قد تطلب Hero Tasks من الأعضاء تنفيذ <strong>مهام إلزامية بدون عمولة</strong> بصورة أسبوعية.
+            </p>
+            <p>هذه المهام جزء من نظام تشغيل المنصة، وليست مهامًا مدفوعة، وقد تستخدم لأغراض مثل:</p>
+            <ul>
+              <li>اختبار النظام وتحسينه</li>
+              <li>اختبار أنواع جديدة من المهام</li>
+              <li>إعداد نماذج ونتائج لعرض الخدمة على العملاء</li>
+              <li>دعم جهود جذب العملاء</li>
+              <li>التحقق من قدرة المنصة على تنفيذ المهام قبل تقديمها للعملاء</li>
+            </ul>
+            <div class="alert">
+              يجب على العضو تنفيذ المهام الإلزامية المطلوبة منه للمحافظة على نشاط حسابه.
+              عدم تنفيذ المهام الإلزامية خلال الفترة المحددة قد يؤدي إلى تعليق نشاط الحساب أو تقييد الوصول إلى المهام.
+              سيتم توضيح أن المهمة إلزامية وعدم وجود عمولة عليها قبل تنفيذها.
+            </div>
+          </article>
+
+          <article class="term-card">
+            <h3>المهام المدفوعة</h3>
+            <p>تُحدد عمولة كل مهمة مدفوعة عند نشرها.</p>
+            <p>لا تُحتسب العمولة لمجرد حجز المهمة، وإنما بعد تنفيذها وفق التعليمات واعتمادها من المشرف.</p>
+          </article>
+
+          <article class="term-card">
+            <h3>الاعتماد</h3>
+            <p>يراجع المشرف الإثبات والنتيجة.</p>
+            <p>عند قبول التنفيذ تتغير حالة المهمة إلى: <strong>approved</strong> وتُضاف العمولة المستحقة إلى رصيد العضو.</p>
+            <p>أما التنفيذ غير المطابق للشروط فقد يُرفض ولا تُحتسب له العمولة.</p>
+          </article>
+
+          <article class="term-card">
+            <h3>المخالفات</h3>
+            <p>يُمنع:</p>
+            <ul>
+              <li>إرسال إثبات مزيف أو غير متعلق بالمهمة</li>
+              <li>التلاعب بلقطات الشاشة</li>
+              <li>تقديم نتائج وهمية</li>
+              <li>تنفيذ المهمة بطريقة مخالفة للتعليمات</li>
+              <li>استخدام حسابات متعددة للتحايل</li>
+              <li>تسجيل معلومات غير صحيحة عمدًا</li>
+              <li>محاولة الحصول على عمولة دون تنفيذ المهمة</li>
+              <li>التلاعب بحالات المهام أو الاعتماد أو السحب</li>
+              <li>مشاركة بيانات أو تعليمات العميل بطريقة غير مصرح بها</li>
+            </ul>
+            <div class="danger-box">
+              قد تؤدي المخالفات إلى رفض المهمة أو تعليق الحساب أو إغلاقه، بحسب طبيعة المخالفة.
+            </div>
+          </article>
+
+          <article class="term-card">
+            <h3>السحب</h3>
+            <p>السحب ليس متاحًا طوال الوقت.</p>
+            <p>عند فتح فترة السحب للعضو:</p>
+            <ul>
+              <li>يرسل العضو طلب السحب عبر البوت.</li>
+              <li>يُسجل الطلب للمراجعة.</li>
+              <li>يراجع المشرف الطلب.</li>
+              <li>يتم الدفع يدويًا.</li>
+              <li>يسجل المشرف الطلب كـ <strong>paid</strong> بعد إتمام التحويل.</li>
+              <li>تُغلق حالة السحب للعضو.</li>
+            </ul>
+          </article>
+
+          <article class="term-card">
+            <h3>موعد الدفع</h3>
+            <p>تتم معالجة طلبات السحب وفق دورة الدفع المعتمدة من المنصة.</p>
+            <p><strong>موعد الدفع الحالي: يوم 5 من كل شهر.</strong></p>
+            <p>
+              ولا يعني اعتماد المهمة أن العمولة ستُدفع فورًا؛ بل تضاف إلى رصيد العضو وتصبح قابلة للسحب
+              عند فتح فترة السحب واستيفاء شروط السحب.
+            </p>
+          </article>
+
+          <article class="term-card">
+            <h3>مسؤولية العضو</h3>
+            <p>العضو مسؤول عن:</p>
+            <ul>
+              <li>صحة بيانات التسجيل</li>
+              <li>حساب Telegram الخاص به</li>
+              <li>تنفيذ المهام بنفسه</li>
+              <li>الالتزام بالتعليمات والمهل</li>
+              <li>الحفاظ على سرية بيانات العملاء</li>
+              <li>متابعة الإشعارات والتعليمات الخاصة بحسابه</li>
+            </ul>
+          </article>
+
+          <article class="term-card">
+            <h3>تغييرات النظام</h3>
+            <p>
+              Hero Tasks منصة قيد التطوير، وقد تتغير أنواع المهام أو آليات التشغيل والاعتماد والسحب
+              مع نمو المنصة.
+            </p>
+            <p>سيتم الإعلان عن التغييرات المهمة قبل تطبيقها متى كان ذلك ممكنًا.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Start now -->
+    <section class="cta" id="start">
+      <div class="container">
+        <h2>ابدأ الآن</h2>
+        <p>
+          التسجيل مجاني حاليًا. سجّل عبر Telegram، أكمل بياناتك، وانتظر تفعيل حسابك.
+        </p>
+
+        <div class="action-row" style="justify-content: center;">
+          <a class="btn" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">
+            ابدأ عبر Telegram
+          </a>
+
+          <a class="email-link" href="mailto:info@hero1.vip">
+            ✉ info@hero1.vip
+          </a>
+        </div>
+
+        <p style="margin-top: 1.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+          ملاحظة: تختلف المهام والعمولات حسب طلبات العملاء والدولة ومتطلبات كل مهمة،
+          ولا يوجد ضمان لتوفر عدد محدد من المهام المدفوعة يوميًا.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        © <span id="year"></span> هيرو تاسك — Hero Tasks.
+        <a href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">ابدأ عبر Telegram</a>
+        —
+        <a href="mailto:info@hero1.vip">info@hero1.vip</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
