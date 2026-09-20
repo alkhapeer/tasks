@@ -23,7 +23,6 @@
     --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.06);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{
     font-family:'Cairo',system-ui,-apple-system,sans-serif;
@@ -167,7 +166,7 @@
   .deadline{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
   .deadline.is-urgent{color:var(--danger);font-weight:700}
 
-  /* ---------- Balance ---------- */
+  /* ---------- Account / Balance ---------- */
   .balance-card{
     background:linear-gradient(135deg,var(--p-dark),var(--p) 60%,var(--a));
     color:#fff;border-radius:22px;padding:1.6rem;text-align:center;
@@ -181,6 +180,10 @@
     background:rgba(255,255,255,.18);padding:.25rem .7rem;border-radius:999px;
     margin-top:.3rem;
   }
+  .balance-note{
+    font-size:.78rem;color:rgba(255,255,255,.85);margin-top:.6rem;
+    line-height:1.5;
+  }
   .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
   .stat{
     background:#fff;border:1px solid var(--border);border-radius:14px;padding:.9rem;text-align:center;
@@ -188,7 +191,6 @@
   .stat span{display:block;font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:.2rem}
   .stat strong{font-size:1.1rem;color:var(--text)}
 
-  /* ---------- Profile ---------- */
   .profile-card,.supervisor-card{
     background:#fff;border:1px solid var(--border);border-radius:var(--radius);
     padding:1rem;box-shadow:var(--shadow);display:grid;gap:.1rem;
@@ -224,7 +226,7 @@
   /* ---------- Bottom nav ---------- */
   .bottom-nav{
     position:fixed;left:0;right:0;bottom:0;z-index:35;
-    display:grid;grid-template-columns:repeat(4,1fr);
+    display:grid;grid-template-columns:repeat(3,1fr);
     background:rgba(255,255,255,.97);backdrop-filter:blur(14px);
     border-top:1px solid var(--border);
     padding-bottom:env(safe-area-inset-bottom);
@@ -257,14 +259,11 @@
   .sheet-content p{color:var(--muted);font-size:.9rem}
   .sheet-content .field{display:grid;gap:.3rem;font-size:.85rem;font-weight:700}
   .sheet-content .field input,
-  .sheet-content .field textarea,
   .sheet-content .field select{
     font-family:inherit;font-size:.92rem;padding:.65rem .8rem;border-radius:11px;
     border:1px solid var(--border);background:var(--bg);color:var(--text);
   }
-  .sheet-content .field input:focus,
-  .sheet-content .field textarea:focus{outline:none;border-color:var(--p);background:#fff}
-  .sheet-content textarea{min-height:80px;resize:vertical}
+  .sheet-content .field input:focus{outline:none;border-color:var(--p);background:#fff}
   @keyframes fade{from{opacity:0}}
   @keyframes up{from{transform:translateY(20px);opacity:.6}}
 
@@ -286,7 +285,6 @@
       position:sticky;bottom:0;max-width:640px;margin:0 auto;
       border-radius:18px 18px 0 0;border:1px solid var(--border);border-bottom:0;
     }
-    .task-meta{grid-template-columns:repeat(3,1fr)}
     .sheet{align-items:center}
     .sheet-body{border-radius:22px;max-height:80vh;padding:1.2rem 1.4rem}
   }
@@ -313,16 +311,13 @@
         <small>Hero Tasks</small>
       </span>
     </a>
-
     <div class="header-actions">
       <span class="status-pill" id="accountStatus" data-status="guest">غير مسجل</span>
       <button class="icon-btn" id="installBtn" type="button" hidden title="تثبيت التطبيق" aria-label="تثبيت التطبيق">⬇</button>
-      <button class="icon-btn" id="refreshBtn" type="button" title="تحديث" aria-label="تحديث" hidden>↻</button>
     </div>
   </div>
 </header>
 
-<!-- ================= Main ================= -->
 <main class="app-main">
 
   <!-- ====== AUTH VIEW ====== -->
@@ -330,29 +325,24 @@
     <div class="auth-card">
       <div class="auth-head">
         <h1>مرحبًا بك في Hero Tasks</h1>
-        <p>سجّل دخولك أو أنشئ حسابًا جديدًا للبدء في تنفيذ المهام.</p>
+        <p>سجّل دخولك أو أنشئ حسابًا جديدًا للبدء.</p>
       </div>
-
       <div class="auth-tabs" role="tablist">
         <button class="auth-tab is-active" data-auth="login" type="button">تسجيل الدخول</button>
         <button class="auth-tab" data-auth="register" type="button">إنشاء حساب</button>
       </div>
-
-      <form class="auth-form" id="loginForm" data-form="login">
+      <form class="auth-form" id="loginForm">
         <label>
           رقم العضوية أو اسم Telegram
           <input name="identifier" required placeholder="مثال: 1001 أو @username" autocomplete="username" />
         </label>
         <button class="btn btn-primary btn-block" type="submit">دخول</button>
-        <p class="hint">إذا فقدت رقم عضويتك، تواصل مع المشرف عبر Telegram.</p>
+        <p class="hint">إذا فقدت رقم عضويتك، تواصل مع المشرف على Telegram.</p>
       </form>
-
-      <form class="auth-form" id="registerForm" data-form="register" hidden>
+      <form class="auth-form" id="registerForm" hidden>
         <label>الاسم الكامل <input name="name" required autocomplete="name" /></label>
         <label>الدولة <input name="country" required autocomplete="country-name" /></label>
         <label>اسم Telegram <input name="telegram" required placeholder="@username" dir="ltr" /></label>
-        <label>البريد الإلكتروني (اختياري) <input name="email" type="email" dir="ltr" autocomplete="email" /></label>
-        <label>رقم الهاتف (اختياري) <input name="phone" dir="ltr" inputmode="tel" autocomplete="tel" /></label>
         <button class="btn btn-primary btn-block" type="submit">إنشاء الحساب</button>
         <p class="hint">بعد التسجيل، تتم مراجعة بياناتك من المشرف لتفعيل الحساب.</p>
       </form>
@@ -390,36 +380,26 @@
       <div class="list" id="myTasksList"></div>
     </div>
 
-    <!-- BALANCE -->
-    <div class="tab-panel" data-panel="balance" hidden>
-      <div class="panel-head">
-        <h2>رصيدي</h2>
-        <button class="btn btn-ghost btn-small" id="refreshBalance" type="button">تحديث</button>
-      </div>
+    <!-- ACCOUNT (includes Balance) -->
+    <div class="tab-panel" data-panel="account" hidden>
+      <div class="panel-head"><h2>حسابي</h2></div>
 
+      <!-- Balance card -->
       <div class="balance-card">
         <div class="balance-label">الرصيد الحالي</div>
         <div class="balance-amount" id="balanceAmount">0</div>
         <div class="balance-status" id="balanceStatus">—</div>
+        <div class="balance-note" id="balanceNote">—</div>
       </div>
 
+      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat"><span>إجمالي العمولات</span><strong id="totalEarned">0</strong></div>
         <div class="stat"><span>مهام معتمدة</span><strong id="approvedCount">0</strong></div>
       </div>
 
-      <button class="btn btn-primary btn-block" id="withdrawBtn" type="button" disabled>طلب السحب</button>
-
-      <div class="panel-head" style="margin-top:1.6rem">
-        <h3>سجل طلبات السحب</h3>
-      </div>
-      <div class="list" id="withdrawalsList"></div>
-    </div>
-
-    <!-- ACCOUNT -->
-    <div class="tab-panel" data-panel="account" hidden>
-      <div class="panel-head"><h2>حسابي</h2></div>
-
+      <!-- Profile -->
+      <div class="panel-head" style="margin-top:1.2rem"><h3>بيانات العضو</h3></div>
       <div class="profile-card">
         <div class="profile-row"><span>الاسم</span><strong id="pName">—</strong></div>
         <div class="profile-row"><span>رقم العضوية</span><strong id="pId" dir="ltr">—</strong></div>
@@ -428,23 +408,29 @@
         <div class="profile-row"><span>حالة التفعيل</span><strong id="pStatus">—</strong></div>
       </div>
 
-      <div class="panel-head" style="margin-top:1.6rem"><h3>المشرف المسؤول</h3></div>
+      <!-- Supervisor -->
+      <div class="panel-head" style="margin-top:1.2rem"><h3>المشرف المسؤول</h3></div>
       <div class="supervisor-card">
         <div>
-          <strong id="pSupervisor">—</strong><br>
-          <small id="pSupervisorContact">—</small>
+          <strong id="pSupervisor">@Herocourses</strong><br>
+          <small>تواصل معه لإرسال الإثبات أو الاستفسار</small>
         </div>
-        <a class="btn btn-secondary btn-small" id="contactSupervisor" href="#" target="_blank" rel="noopener">تواصل</a>
+        <a class="btn btn-secondary btn-small" id="contactSupervisor" href="https://t.me/Herocourses" target="_blank" rel="noopener">تواصل</a>
       </div>
 
-      <div class="panel-head" style="margin-top:1.6rem"><h3>خيارات</h3></div>
+      <!-- Withdrawals -->
+      <div class="panel-head" style="margin-top:1.4rem"><h3>سجل طلبات السحب</h3></div>
+      <div class="list" id="withdrawalsList"></div>
+
+      <!-- Options -->
+      <div class="panel-head" style="margin-top:1.4rem"><h3>خيارات</h3></div>
       <div class="account-actions">
-        <a class="btn btn-secondary" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">Telegram — خيار احتياطي</a>
+        <button class="btn btn-secondary" id="withdrawBtn" type="button" hidden>طلب السحب</button>
+        <a class="btn btn-secondary" href="https://t.me/Herocourses" target="_blank" rel="noopener">Telegram المشرف — احتياطي</a>
         <a class="btn btn-secondary" href="mailto:info@hero1.vip">مراسلة الدعم</a>
         <button class="btn btn-danger" id="logoutBtn" type="button">تسجيل الخروج</button>
       </div>
     </div>
-
   </section>
 </main>
 
@@ -452,7 +438,6 @@
 <nav class="bottom-nav" id="bottomNav" hidden>
   <button class="nav-item is-active" data-tab="tasks" type="button"><span>🧩</span>المهام</button>
   <button class="nav-item" data-tab="mytasks" type="button"><span>📋</span>مهامي</button>
-  <button class="nav-item" data-tab="balance" type="button"><span>💰</span>رصيدي</button>
   <button class="nav-item" data-tab="account" type="button"><span>👤</span>حسابي</button>
 </nav>
 
@@ -468,68 +453,28 @@
   </div>
 </div>
 
-<!-- ================= Toast ================= -->
 <div class="toast" id="toast" hidden></div>
 
 <script>
 /* ============================================================
-   Hero Tasks — App (start.html)
+   Hero Tasks — App v2
    ------------------------------------------------------------
-   يربط هذا الملف بواجهة Google Apps Script الحالية.
-   ضع رابط Web App في المتغير API_URL أدناه.
+   - استدعاء واحد عند الدخول (login)
+   - تحديث خفيف للمهام كل ساعة
+   - الرصيد يُجلب فقط يوم 5
+   - رفع الإثبات عبر Telegram فقط
+   - كل شيء آخر محفوظ محليًا
    ============================================================ */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbytzOyWhQ9hsQresxibYjy2cnjBpjB4Rk0Og7RkXT2H8WDpklcddEFAfmNbYEEWba94Cw/exec"; // ← ضع هنا رابط Google Apps Script (ينتهي بـ /exec)
-const SESSION_KEY = "hero_member_id";
-const TELEGRAM_FALLBACK = "https://t.me/hero_tasks_bot";
+const API_URL = ""; // ← ضع رابط Google Apps Script هنا (ينتهي بـ /exec)
+const SUPERVISOR_URL = "https://t.me/Herocourses";
+const LS_KEY = "hero_app_v1";
+const LS_VERSION = 1;
 
-/* ------------------------------------------------------------
-   Actions المتوقعة من Google Apps Script:
-   ------------------------------------------------------------
-   POST { action: "register", name, country, telegram, email, phone }
-     → { ok:true, member:{ id, name, country, telegram, status, supervisor, supervisor_contact } }
-
-   POST { action: "login", identifier }
-     → { ok:true, member:{...} } | { ok:false, message }
-
-   POST { action: "getProfile", member_id }
-     → { ok:true, member:{...} }
-
-   POST { action: "getTasks", member_id }
-     → { ok:true, tasks:[ { id, title, description, type:"paid"|"mandatory",
-                            value, commission, seats_left, deadline } ] }
-
-   POST { action: "reserveTask", member_id, task_id }
-     → { ok:true, message }
-
-   POST { action: "getMyTasks", member_id }
-     → { ok:true,
-         reserved:[ { completion_id, task_id, title, description, deadline,
-                      value, commission, type } ],
-         submitted:[ {...} ],
-         approved:[ {...} ] }
-
-   POST { action: "submitProof", member_id, completion_id, proof_url, notes }
-     → { ok:true, message }
-
-   POST { action: "getBalance", member_id }
-     → { ok:true, current, total, approved_count, ready:true|false,
-         withdrawals:[ { id, amount, status, created_at } ] }
-
-   POST { action: "requestWithdraw", member_id, amount, method, account }
-     → { ok:true, message }
-
-   ------------------------------------------------------------
-   جداول Sheets المتوقعة (للتوافق):
-     Members      : id | name | country | telegram | email | phone |
-                    status | supervisor | supervisor_contact | created_at
-     Tasks        : id | title | description | type | value | commission |
-                    seats | seats_left | deadline | status
-     Completions  : id | member_id | task_id | status | proof_url | notes |
-                    reserved_at | submitted_at | approved_at
-     Commissions  : id | member_id | task_id | amount | status | created_at
-     Withdrawals  : id | member_id | amount | method | account | status | created_at
-   ============================================================ */
+const TTL_TASKS      = 60 * 60 * 1000;  // ساعة واحدة
+const TTL_BALANCE    = 60 * 60 * 1000;  // ساعة واحدة (يوم 5 فقط)
+const SESSION_MAX    = 30 * 24 * 60 * 60 * 1000; // 30 يوم
+const REFRESH_GAP    = 30 * 1000;       // 30 ثانية بين التحديثات اليدوية
 
 /* ---------- State ---------- */
 const state = {
@@ -541,7 +486,10 @@ const state = {
   balance: null,
   tab: "tasks",
   installPrompt: null,
-  loading: false
+  lastTasksFetch: 0,
+  lastBalanceFetch: 0,
+  lastSyncAt: 0,
+  lastManualRefresh: 0
 };
 
 /* ---------- DOM helpers ---------- */
@@ -551,21 +499,48 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
 }[c]));
 
+/* ---------- LocalStorage ---------- */
+function saveLocal() {
+  if (!state.member) return;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      version: LS_VERSION,
+      member: state.member,
+      tasks: state.tasks,
+      myTasks: state.myTasks,
+      balance: state.balance,
+      lastTasksFetch: state.lastTasksFetch,
+      lastBalanceFetch: state.lastBalanceFetch,
+      lastSyncAt: state.lastSyncAt
+    }));
+  } catch (e) { /* قد يكون ممتلئًا */ }
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data.version !== LS_VERSION) return null;
+    return data;
+  } catch (e) { return null; }
+}
+
+function clearLocal() {
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+}
+
 /* ---------- API ---------- */
 async function api(action, payload = {}) {
-  if (!API_URL) {
-    return { ok:false, offline:true, message:"لم يتم ربط Google Apps Script بعد." };
-  }
+  if (!API_URL) return { ok:false, offline:true, message:"لم يتم ربط Google Apps Script بعد." };
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      // text/plain يتجنب CORS preflight مع GAS
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action, ...payload })
     });
     if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (e) {
     return { ok:false, message:"تعذر الاتصال بالخادم." };
   }
@@ -600,18 +575,16 @@ document.addEventListener("click", (e) => {
   if (e.target.closest("[data-close-sheet]")) closeSheet();
 });
 
-/* ---------- Format helpers ---------- */
+/* ---------- Format ---------- */
 function fmtMoney(n) {
-  const v = Number(n || 0);
-  return v.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
+  return (Number(n) || 0).toLocaleString("ar-EG", { maximumFractionDigits: 2 });
 }
 function fmtDate(d) {
   if (!d) return "—";
   const t = new Date(d);
   if (isNaN(t)) return String(d);
-  try {
-    return t.toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" });
-  } catch { return String(d); }
+  try { return t.toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" }); }
+  catch { return String(d); }
 }
 function deadlineLabel(d) {
   if (!d) return "—";
@@ -624,6 +597,9 @@ function deadlineLabel(d) {
   if (days > 0) return `باقي ${days} يوم`;
   if (hours > 0) return `باقي ${hours} ساعة`;
   return "أقل من ساعة";
+}
+function isDay5() {
+  return new Date().getDate() === 5;
 }
 
 /* ---------- Auth view ---------- */
@@ -639,14 +615,15 @@ $("#loginForm").addEventListener("submit", async (e) => {
   const identifier = e.target.identifier.value.trim();
   if (!identifier) return;
   if (!API_URL) { toast("الربط بالخادم لم يتم بعد.", "err"); return; }
+
   const btn = e.target.querySelector("button[type=submit]");
   btn.disabled = true; btn.textContent = "جارٍ الدخول…";
   const r = await api("login", { identifier });
   btn.disabled = false; btn.textContent = "دخول";
+
   if (r.ok && r.member) {
-    setSession(r.member);
-    toast("تم تسجيل الدخول بنجاح.", "ok");
-    await loadAll();
+    applyServerData(r);
+    toast("تم تسجيل الدخول.", "ok");
   } else {
     toast(r.message || "تعذر تسجيل الدخول.", "err");
   }
@@ -659,9 +636,7 @@ $("#registerForm").addEventListener("submit", async (e) => {
   const payload = {
     name: f.name.value.trim(),
     country: f.country.value.trim(),
-    telegram: f.telegram.value.trim(),
-    email: f.email.value.trim(),
-    phone: f.phone.value.trim()
+    telegram: f.telegram.value.trim()
   };
   if (!payload.name || !payload.country || !payload.telegram) {
     toast("يرجى إكمال الحقول المطلوبة.", "err"); return;
@@ -670,52 +645,46 @@ $("#registerForm").addEventListener("submit", async (e) => {
   btn.disabled = true; btn.textContent = "جارٍ الإنشاء…";
   const r = await api("register", payload);
   btn.disabled = false; btn.textContent = "إنشاء الحساب";
+
   if (r.ok && r.member) {
-    setSession(r.member);
-    toast("تم إنشاء الحساب. بانتظار التفعيل من المشرف.", "ok");
-    await loadAll();
+    applyServerData(r);
+    toast("تم إنشاء الحساب. بانتظار التفعيل.", "ok");
   } else {
     toast(r.message || "تعذر إنشاء الحساب.", "err");
   }
 });
 
-/* ---------- Session ---------- */
-function setSession(member) {
-  state.member = member;
-  if (member && member.id != null) {
-    try { localStorage.setItem(SESSION_KEY, String(member.id)); } catch {}
-  }
+/* ---------- Apply server data ---------- */
+function applyServerData(r) {
+  if (r.member) state.member = r.member;
+  if (r.tasks)   { state.tasks = r.tasks; state.lastTasksFetch = Date.now(); }
+  if (r.myTasks) state.myTasks = r.myTasks;
+  if (r.balance) { state.balance = r.balance; state.lastBalanceFetch = Date.now(); }
+  state.lastSyncAt = Date.now();
+  saveLocal();
   renderSession();
-}
-function clearSession() {
-  state.member = null;
-  try { localStorage.removeItem(SESSION_KEY); } catch {}
-  renderSession();
-}
-function getStoredId() {
-  try { return localStorage.getItem(SESSION_KEY); } catch { return null; }
+  renderTasks();
+  renderMyTasks();
+  renderAccount();
 }
 
-/* ---------- Render session state ---------- */
+/* ---------- Session render ---------- */
 function renderSession() {
   const authed = !!state.member;
   $("#viewAuth").hidden = authed;
   $("#viewApp").hidden = !authed;
   $("#bottomNav").hidden = !authed;
-  $("#refreshBtn").hidden = !authed;
 
   const pill = $("#accountStatus");
   if (!authed) {
-    pill.dataset.status = "guest";
-    pill.textContent = "غير مسجل";
-    return;
+    pill.dataset.status = "guest"; pill.textContent = "غير مسجل"; return;
   }
-  const s = (state.member.status || "").toLowerCase();
-  if (s === "active" || s === "مفعل" || s === "approved") {
+  const s = String(state.member.status || "").toLowerCase();
+  if (["active","مفعل","approved"].includes(s)) {
     pill.dataset.status = "active"; pill.textContent = "مفعل";
-  } else if (s === "pending" || s === "بانتظار التفعيل" || s === "قيد المراجعة") {
+  } else if (["pending","بانتظار التفعيل","قيد المراجعة"].includes(s)) {
     pill.dataset.status = "pending"; pill.textContent = "بانتظار التفعيل";
-  } else if (s === "suspended" || s === "موقوف") {
+  } else if (["suspended","موقوف"].includes(s)) {
     pill.dataset.status = "suspended"; pill.textContent = "موقوف";
   } else {
     pill.dataset.status = "guest"; pill.textContent = "غير مفعل";
@@ -727,19 +696,40 @@ function switchTab(tab) {
   state.tab = tab;
   $$(".tab-panel").forEach(p => p.hidden = p.dataset.panel !== tab);
   $$(".nav-item").forEach(b => b.classList.toggle("is-active", b.dataset.tab === tab));
-  if (tab === "tasks")    loadTasks();
-  if (tab === "mytasks")  loadMyTasks();
-  if (tab === "balance")  loadBalance();
-  if (tab === "account")  renderAccount();
+
+  // تحديث خفيف عند فتح تبويب المهام إن كانت قديمة
+  if (tab === "tasks" && state.member &&
+      Date.now() - state.lastTasksFetch > TTL_TASKS) {
+    syncSilent();
+  }
+  // جلب الرصيد يوم 5 فقط عند فتح تبويب الحساب
+  if (tab === "account" && state.member && isDay5() &&
+      Date.now() - state.lastBalanceFetch > TTL_BALANCE) {
+    fetchBalance();
+  }
 }
 $$(".nav-item").forEach(b => b.addEventListener("click", () => switchTab(b.dataset.tab)));
 
-/* ---------- Load all ---------- */
-async function loadAll() {
+/* ---------- Sync (خفيف) ---------- */
+async function syncSilent() {
   if (!state.member) return;
-  await Promise.all([loadTasks(), loadMyTasks(), loadBalance()]);
-  renderAccount();
+  const r = await api("sync", { member_id: state.member.id });
+  if (r.ok) applyServerData(r);
 }
+
+/* ---------- Refresh (يدوي، throttled) ---------- */
+function manualRefresh() {
+  const now = Date.now();
+  if (now - state.lastManualRefresh < REFRESH_GAP) {
+    const wait = Math.ceil((REFRESH_GAP - (now - state.lastManualRefresh)) / 1000);
+    toast(`يرجى الانتظار ${wait} ثانية.`, "err");
+    return;
+  }
+  state.lastManualRefresh = now;
+  syncSilent().then(() => toast("تم التحديث.", "ok"));
+}
+$("#refreshTasks").addEventListener("click", manualRefresh);
+$("#refreshMyTasks").addEventListener("click", manualRefresh);
 
 /* ---------- Tasks ---------- */
 $("#taskFilters").addEventListener("click", (e) => {
@@ -748,25 +738,6 @@ $("#taskFilters").addEventListener("click", (e) => {
   $$("#taskFilters .chip").forEach(c => c.classList.toggle("is-active", c === chip));
   renderTasks();
 });
-$("#refreshTasks").addEventListener("click", loadTasks);
-
-async function loadTasks() {
-  if (!state.member) return;
-  const list = $("#tasksList");
-  list.innerHTML = `<div class="loading"><span class="spinner"></span>جارٍ تحميل المهام…</div>`;
-  const r = await api("getTasks", { member_id: state.member.id });
-  if (r.ok && Array.isArray(r.tasks)) {
-    state.tasks = r.tasks;
-  } else {
-    state.tasks = [];
-    if (r.offline) {
-      list.innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.<br><small>بعد الربط ستظهر المهام المتاحة هنا.</small></div>`;
-      return;
-    }
-    toast(r.message || "تعذر تحميل المهام.", "err");
-  }
-  renderTasks();
-}
 
 function renderTasks() {
   const list = $("#tasksList");
@@ -779,21 +750,15 @@ function renderTasks() {
   }
 
   list.innerHTML = arr.map(t => {
-    const isPaid = t.type === "paid";
-    const badge = isPaid
+    const badge = t.type === "paid"
       ? `<span class="task-badge paid">مدفوعة</span>`
       : `<span class="task-badge mandatory">إلزامية</span>`;
-
-    // ✅ الوصف — يُعرض فقط إذا موجود
     const descHtml = (t.description && String(t.description).trim())
-      ? `<p class="task-desc">${esc(String(t.description).slice(0, 160))}${String(t.description).length > 160 ? "…" : ""}</p>`
+      ? `<p class="task-desc">${esc(String(t.description).slice(0,160))}${String(t.description).length>160?"…":""}</p>`
       : "";
-
-    // ✅ الموعد النهائي — يُعرض فقط إذا موجود
     const deadlineHtml = t.deadline
-      ? `<div class="deadline" data-deadline="${esc(t.deadline)}">⏱ ${esc(deadlineLabel(t.deadline))}</div>`
+      ? `<div class="deadline">⏱ ${esc(deadlineLabel(t.deadline))}</div>`
       : "";
-
     return `
       <article class="task-card" data-task-id="${esc(t.id)}">
         <div class="task-top">
@@ -835,9 +800,9 @@ function openTaskDetails(t) {
       <div><span>العمولة</span><strong class="money">${esc(fmtMoney(t.commission))}</strong></div>
       <div><span>المقاعد</span><strong>${esc(t.seats_left ?? "—")}</strong></div>
     </div>
-    <p>${esc(t.description || "لا يوجد وصف.")}</p>
-    ${t.requirements ? `<p><strong>المتطلبات:</strong><br>${esc(t.requirements)}</p>` : ""}
+    ${t.description ? `<p>${esc(t.description)}</p>` : ""}
     <div class="deadline">⏱ الموعد النهائي: ${esc(fmtDate(t.deadline))} — ${esc(deadlineLabel(t.deadline))}</div>
+    <p style="margin-top:.5rem">📌 بعد التنفيذ، أرسل الإثبات للمشرف على Telegram.</p>
     <button class="btn btn-primary btn-block" id="sheetReserveBtn">حجز المهمة</button>
   `;
   openSheet(t.title || "تفاصيل المهمة", wrap);
@@ -849,50 +814,43 @@ function openTaskDetails(t) {
 
 async function reserveTask(t) {
   if (!state.member) return;
-  if (state.member.status && !["active","مفعل","approved"].includes(String(state.member.status).toLowerCase())) {
-    toast("حسابك غير مفعل بعد. يرجى انتظار تفعيل المشرف.", "err");
+  const s = String(state.member.status || "").toLowerCase();
+  if (!["active","مفعل","approved"].includes(s)) {
+    toast("حسابك غير مفعل بعد.", "err");
     return;
   }
   if (!confirm(`هل تريد حجز المهمة: ${t.title}؟`)) return;
+
   const r = await api("reserveTask", { member_id: state.member.id, task_id: t.id });
+
   if (r.ok) {
-    toast(r.message || "تم حجز المهمة بنجاح.", "ok");
-    await Promise.all([loadTasks(), loadMyTasks()]);
+    if (r.tasks)   state.tasks = r.tasks;
+    if (r.myTasks) state.myTasks = r.myTasks;
+    state.lastTasksFetch = Date.now();
+    state.lastSyncAt = Date.now();
+    saveLocal();
+    renderTasks();
+    renderMyTasks();
+    toast("تم حجز المهمة ✓ — أرسل الإثبات للمشرف بعد التنفيذ.", "ok");
     switchTab("mytasks");
+    // فتح Telegram المشرف تلقائيًا (اختياري)
+    setTimeout(() => {
+      if (confirm("هل تريد فتح Telegram المشرف الآن لإرسال الإثبات؟")) {
+        window.open(SUPERVISOR_URL, "_blank");
+      }
+    }, 400);
   } else {
-    toast(r.message || "تعذر حجز المهمة.", "err");
+    toast(r.message || "تعذر الحجز.", "err");
   }
 }
 
-/* ---------- My tasks ---------- */
+/* ---------- My Tasks ---------- */
 $("#myTaskFilters").addEventListener("click", (e) => {
   const chip = e.target.closest(".chip"); if (!chip) return;
   state.myFilter = chip.dataset.mfilter;
   $$("#myTaskFilters .chip").forEach(c => c.classList.toggle("is-active", c === chip));
   renderMyTasks();
 });
-$("#refreshMyTasks").addEventListener("click", loadMyTasks);
-
-async function loadMyTasks() {
-  if (!state.member) return;
-  const list = $("#myTasksList");
-  list.innerHTML = `<div class="loading"><span class="spinner"></span>جارٍ التحميل…</div>`;
-  const r = await api("getMyTasks", { member_id: state.member.id });
-  if (r.ok) {
-    state.myTasks = {
-      reserved:  Array.isArray(r.reserved)  ? r.reserved  : [],
-      submitted: Array.isArray(r.submitted) ? r.submitted : [],
-      approved:  Array.isArray(r.approved)  ? r.approved  : []
-    };
-  } else {
-    state.myTasks = { reserved:[], submitted:[], approved:[] };
-    if (r.offline) {
-      list.innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.</div>`;
-      return;
-    }
-  }
-  renderMyTasks();
-}
 
 function renderMyTasks() {
   const list = $("#myTasksList");
@@ -908,21 +866,30 @@ function renderMyTasks() {
   }
 
   list.innerHTML = arr.map(m => {
-    const st = key;
-    const badgeCls = st === "reserved" ? "reserved"
-                   : st === "submitted" ? "submitted" : "approved";
-    const badgeTxt = st === "reserved" ? "محجوزة"
-                   : st === "submitted" ? "قيد المراجعة" : "معتمدة";
-    const actionHtml = st === "reserved"
-      ? `<button class="btn btn-primary btn-small" data-proof="${esc(m.completion_id)}">رفع إثبات التنفيذ</button>`
-      : st === "submitted"
-      ? `<button class="btn btn-secondary btn-small" disabled>بانتظار المراجعة</button>`
-      : `<button class="btn btn-secondary btn-small" disabled>تم اعتماد العمولة</button>`;
+    const cls = key === "reserved" ? "reserved"
+              : key === "submitted" ? "submitted" : "approved";
+    const txt = key === "reserved" ? "محجوزة"
+              : key === "submitted" ? "قيد المراجعة" : "معتمدة";
+
+    // Actions
+    let actions = "";
+    if (key === "reserved") {
+      actions = `
+        <a class="btn btn-primary btn-small" href="${esc(SUPERVISOR_URL)}" target="_blank" rel="noopener">
+          إرسال الإثبات للمشرف
+        </a>
+      `;
+    } else if (key === "submitted") {
+      actions = `<button class="btn btn-secondary btn-small" disabled>بانتظار المراجعة</button>`;
+    } else {
+      actions = `<button class="btn btn-secondary btn-small" disabled>تم اعتماد العمولة ✓</button>`;
+    }
+
     return `
       <article class="task-card">
         <div class="task-top">
           <div class="task-title">${esc(m.title || "مهمة")}</div>
-          <span class="task-badge ${badgeCls}">${badgeTxt}</span>
+          <span class="task-badge ${cls}">${txt}</span>
         </div>
         ${m.description ? `<p class="task-desc">${esc(String(m.description).slice(0,150))}</p>` : ""}
         <div class="task-meta">
@@ -930,106 +897,77 @@ function renderMyTasks() {
           <div><span>القيمة</span><strong>${esc(fmtMoney(m.value))}</strong></div>
           <div><span>الموعد النهائي</span><strong>${esc(fmtDate(m.deadline))}</strong></div>
         </div>
-        <div class="task-actions">${actionHtml}</div>
+        <div class="task-actions">${actions}</div>
       </article>
     `;
   }).join("");
-
-  list.querySelectorAll("[data-proof]").forEach(btn => {
-    btn.addEventListener("click", () => openProofSheet(btn.dataset.proof));
-  });
 }
 
-/* ---------- Submit proof ---------- */
-function openProofSheet(completionId) {
-  const wrap = document.createElement("div");
-  wrap.innerHTML = `
-    <p>ارفع إثبات تنفيذ المهمة (رابط صورة أو ملف على Google Drive أو Imgur).</p>
-    <label class="field">رابط الإثبات
-      <input type="url" id="proofUrl" placeholder="https://..." dir="ltr" />
-    </label>
-    <label class="field">ملاحظات (اختياري)
-      <textarea id="proofNotes" placeholder="أي تفاصيل إضافية للمشرف"></textarea>
-    </label>
-    <button class="btn btn-primary btn-block" id="proofSubmit">إرسال الإثبات</button>
-  `;
-  openSheet("رفع إثبات التنفيذ", wrap);
-  wrap.querySelector("#proofSubmit").addEventListener("click", async () => {
-    const url = wrap.querySelector("#proofUrl").value.trim();
-    const notes = wrap.querySelector("#proofNotes").value.trim();
-    if (!url) { toast("يرجى إدخال رابط الإثبات.", "err"); return; }
-    const btn = wrap.querySelector("#proofSubmit");
-    btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
-    const r = await api("submitProof", {
-      member_id: state.member.id,
-      completion_id: completionId,
-      proof_url: url,
-      notes
-    });
-    btn.disabled = false; btn.textContent = "إرسال الإثبات";
-    if (r.ok) {
-      toast(r.message || "تم إرسال الإثبات للمراجعة.", "ok");
-      closeSheet();
-      await loadMyTasks();
-      state.myFilter = "submitted";
-      $$("#myTaskFilters .chip").forEach(c => c.classList.toggle("is-active", c.dataset.mfilter === "submitted"));
-      renderMyTasks();
-    } else {
-      toast(r.message || "تعذر إرسال الإثبات.", "err");
-    }
-  });
-}
-
-/* ---------- Balance ---------- */
-$("#refreshBalance").addEventListener("click", loadBalance);
-$("#withdrawBtn").addEventListener("click", openWithdrawSheet);
-
-async function loadBalance() {
+/* ---------- Balance (يوم 5 فقط) ---------- */
+async function fetchBalance() {
   if (!state.member) return;
   const r = await api("getBalance", { member_id: state.member.id });
-
-  if (r.ok) {
-    state.balance = {
-      current: Number(r.current || 0),
-      total: Number(r.total || 0),
-      approved_count: Number(r.approved_count || 0),
-      ready: !!r.ready,
-      withdrawals: Array.isArray(r.withdrawals) ? r.withdrawals : []
-    };
-  } else {
-    state.balance = { current:0, total:0, approved_count:0, ready:false, withdrawals:[] };
-    if (r.offline) {
-      $("#withdrawalsList").innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.</div>`;
-    }
+  if (r.ok && r.balance) {
+    state.balance = r.balance;
+    state.lastBalanceFetch = Date.now();
+    saveLocal();
+    renderAccount();
   }
-  renderBalance();
 }
 
-function renderBalance() {
+/* ---------- Account render ---------- */
+function renderAccount() {
+  const m = state.member; if (!m) return;
+
+  // Profile
+  $("#pName").textContent = m.name || "—";
+  $("#pId").textContent = m.id ?? "—";
+  $("#pCountry").textContent = m.country || "—";
+  $("#pTelegram").textContent = m.telegram || "—";
+  const s = String(m.status || "").toLowerCase();
+  $("#pStatus").textContent =
+    ["active","مفعل","approved"].includes(s) ? "مفعل"
+    : ["pending","بانتظار التفعيل","قيد المراجعة"].includes(s) ? "بانتظار التفعيل"
+    : ["suspended","موقوف"].includes(s) ? "موقوف"
+    : (m.status || "—");
+
+  $("#pSupervisor").textContent = "@Herocourses";
+
+  // Balance
   const b = state.balance || { current:0, total:0, approved_count:0, ready:false, withdrawals:[] };
   $("#balanceAmount").textContent = fmtMoney(b.current);
   $("#totalEarned").textContent = fmtMoney(b.total);
-  $("#approvedCount").textContent = b.approved_count;
+  $("#approvedCount").textContent = b.approved_count || 0;
 
-  const status = $("#balanceStatus");
-  if (b.ready) {
-    status.textContent = "جاهز للسحب ✓";
-    $("#withdrawBtn").disabled = false;
-    $("#withdrawBtn").textContent = "طلب السحب";
+  const statusEl = $("#balanceStatus");
+  const noteEl = $("#balanceNote");
+  const withdrawBtn = $("#withdrawBtn");
+
+  if (!isDay5()) {
+    statusEl.textContent = "يُحدَّث يوم 5 من الشهر";
+    noteEl.textContent = "يتم احتساب العمولات يدويًا من المشرف قبل يوم الدفع.";
+    withdrawBtn.hidden = true;
+  } else if (b.ready) {
+    statusEl.textContent = "جاهز للسحب ✓";
+    noteEl.textContent = "يمكنك طلب السحب الآن.";
+    withdrawBtn.hidden = false;
+    withdrawBtn.textContent = "طلب السحب";
+    withdrawBtn.disabled = false;
   } else {
-    status.textContent = b.current > 0 ? "غير متاح للسحب حاليًا" : "لا يوجد رصيد بعد";
-    $("#withdrawBtn").disabled = true;
-    $("#withdrawBtn").textContent = "طلب السحب (غير متاح حاليًا)";
+    statusEl.textContent = b.current > 0 ? "غير متاح للسحب حاليًا" : "لا يوجد رصيد بعد";
+    noteEl.textContent = "يرجى التواصل مع المشرف للاستفسار.";
+    withdrawBtn.hidden = true;
   }
 
+  // Withdrawals
   const wl = $("#withdrawalsList");
-  if (!b.withdrawals.length) {
+  if (!b.withdrawals || !b.withdrawals.length) {
     wl.innerHTML = `<div class="empty"><span class="ico">🧾</span>لا توجد طلبات سحب سابقة.</div>`;
   } else {
     wl.innerHTML = b.withdrawals.map(w => {
-      const s = String(w.status || "").toLowerCase();
-      const cls = s === "paid" ? "approved" : s === "rejected" ? "rejected" : "submitted";
-      const txt = s === "paid" ? "مدفوع" : s === "rejected" ? "مرفوض" : "قيد المعالجة";
+      const ss = String(w.status || "").toLowerCase();
+      const cls = ss === "paid" ? "approved" : ss === "rejected" ? "rejected" : "submitted";
+      const txt = ss === "paid" ? "مدفوع" : ss === "rejected" ? "مرفوض" : "قيد المعالجة";
       return `
         <article class="task-card">
           <div class="task-top">
@@ -1038,7 +976,7 @@ function renderBalance() {
           </div>
           <div class="task-meta">
             <div><span>المبلغ</span><strong class="money">${esc(fmtMoney(w.amount))}</strong></div>
-            <div><span>الطريقة</span><strong>${esc(w.method || "—")}</strong></div>
+            <div><span>الحالة</span><strong>${txt}</strong></div>
             <div><span>التاريخ</span><strong>${esc(fmtDate(w.created_at))}</strong></div>
           </div>
         </article>
@@ -1047,8 +985,11 @@ function renderBalance() {
   }
 }
 
+/* ---------- Withdraw ---------- */
+$("#withdrawBtn").addEventListener("click", openWithdrawSheet);
+
 function openWithdrawSheet() {
-  const b = state.balance || { current:0 };
+  const b = state.balance || { current:0, ready:false };
   if (!b.ready) { toast("السحب غير متاح حاليًا.", "err"); return; }
   const wrap = document.createElement("div");
   wrap.innerHTML = `
@@ -1064,83 +1005,48 @@ function openWithdrawSheet() {
         <option value="other">أخرى</option>
       </select>
     </label>
-    <label class="field">حساب الاستلام
-      <input type="text" id="wAccount" dir="ltr" placeholder="رقم المحفظة أو الحساب" />
-    </label>
     <button class="btn btn-primary btn-block" id="wSubmit">تأكيد الطلب</button>
   `;
   openSheet("طلب السحب", wrap);
   wrap.querySelector("#wSubmit").addEventListener("click", async () => {
     const amount = Number(wrap.querySelector("#wAmount").value);
-    const method = wrap.querySelector("#wMethod").value;
-    const account = wrap.querySelector("#wAccount").value.trim();
-    if (!amount || amount <= 0) { toast("يرجى إدخال مبلغ صحيح.", "err"); return; }
-    if (amount > b.current) { toast("المبلغ أكبر من الرصيد المتاح.", "err"); return; }
-    if (!account) { toast("يرجى إدخال حساب الاستلام.", "err"); return; }
+    if (!amount || amount <= 0) { toast("مبلغ غير صالح.", "err"); return; }
+    if (amount > b.current) { toast("المبلغ أكبر من الرصيد.", "err"); return; }
     const btn = wrap.querySelector("#wSubmit");
     btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
     const r = await api("requestWithdraw", {
       member_id: state.member.id,
-      amount, method, account
+      amount,
+      method: wrap.querySelector("#wMethod").value,
+      account: ""
     });
     btn.disabled = false; btn.textContent = "تأكيد الطلب";
     if (r.ok) {
-      toast(r.message || "تم تسجيل طلب السحب.", "ok");
+      if (r.balance) state.balance = r.balance;
+      saveLocal();
       closeSheet();
-      await loadBalance();
+      renderAccount();
+      toast(r.message || "تم تسجيل الطلب.", "ok");
     } else {
-      toast(r.message || "تعذر إرسال الطلب.", "err");
+      toast(r.message || "تعذر الإرسال.", "err");
     }
   });
 }
 
-/* ---------- Account ---------- */
-function renderAccount() {
-  const m = state.member; if (!m) return;
-  $("#pName").textContent = m.name || "—";
-  $("#pId").textContent = m.id ?? "—";
-  $("#pCountry").textContent = m.country || "—";
-  $("#pTelegram").textContent = m.telegram || "—";
-
-  const s = (m.status || "").toLowerCase();
-  $("#pStatus").textContent =
-    s === "active" || s === "مفعل" ? "مفعل"
-    : s === "pending" || s === "بانتظار التفعيل" ? "بانتظار التفعيل"
-    : s === "suspended" || s === "موقوف" ? "موقوف"
-    : (m.status || "غير معروف");
-
-  $("#pSupervisor").textContent = m.supervisor || "—";
-  const contact = m.supervisor_contact || "";
-  $("#pSupervisorContact").textContent = contact || "—";
-
-  const link = $("#contactSupervisor");
-  if (contact) {
-    link.href = contact.startsWith("http") ? contact
-      : contact.startsWith("@") ? "https://t.me/" + contact.slice(1)
-      : "mailto:" + contact;
-    link.hidden = false;
-  } else {
-    link.href = TELEGRAM_FALLBACK;
-    link.hidden = false;
-  }
-}
-
+/* ---------- Logout ---------- */
 $("#logoutBtn").addEventListener("click", () => {
-  if (!confirm("هل تريد تسجيل الخروج؟")) return;
-  clearSession();
+  if (!confirm("هل تريد تسجيل الخروج؟ سيتم حذف البيانات المحلية.")) return;
+  clearLocal();
+  state.member = null;
+  state.tasks = [];
+  state.myTasks = { reserved: [], submitted: [], approved: [] };
+  state.balance = null;
+  state.lastTasksFetch = 0;
+  state.lastBalanceFetch = 0;
+  state.lastSyncAt = 0;
+  renderSession();
   switchAuth("login");
   toast("تم تسجيل الخروج.", "ok");
-});
-
-/* ---------- Global refresh ---------- */
-$("#refreshBtn").addEventListener("click", async () => {
-  if (!state.member) return;
-  toast("جارٍ التحديث…");
-  const r = await api("getProfile", { member_id: state.member.id });
-  if (r.ok && r.member) state.member = r.member;
-  renderSession();
-  await loadAll();
-  toast("تم التحديث.", "ok");
 });
 
 /* ---------- Install PWA ---------- */
@@ -1153,23 +1059,17 @@ window.addEventListener("beforeinstallprompt", (e) => {
 window.addEventListener("appinstalled", () => {
   state.installPrompt = null;
   installBtn.hidden = true;
-  toast("تم تثبيت التطبيق بنجاح.", "ok");
 });
 installBtn.addEventListener("click", async () => {
-  if (!state.installPrompt) {
-    toast("التثبيت غير متاح في هذا المتصفح حاليًا.");
-    return;
-  }
+  if (!state.installPrompt) return;
   state.installPrompt.prompt();
-  const choice = await state.installPrompt.userChoice;
+  await state.installPrompt.userChoice;
   state.installPrompt = null;
-  if (choice && choice.outcome === "accepted") installBtn.hidden = true;
-});
-if (window.matchMedia("(display-mode: standalone)").matches) {
   installBtn.hidden = true;
-}
+});
+if (window.matchMedia("(display-mode: standalone)").matches) installBtn.hidden = true;
 
-/* ---------- Service worker ---------- */
+/* ---------- Service Worker ---------- */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch(() => {});
@@ -1179,26 +1079,40 @@ if ("serviceWorker" in navigator) {
 /* ---------- Offline banner ---------- */
 if (!API_URL) $("#offlineBanner").hidden = false;
 
+/* ---------- Auto refresh every hour ---------- */
+setInterval(() => {
+  if (state.member && Date.now() - state.lastTasksFetch > TTL_TASKS) {
+    syncSilent();
+  }
+}, 15 * 60 * 1000); // يفحص كل 15 دقيقة، ويُحدّث إذا تجاوزت الساعة
+
 /* ---------- Init ---------- */
 (async function init() {
-  const storedId = getStoredId();
-  if (storedId) {
-    if (API_URL) {
-      const r = await api("getProfile", { member_id: storedId });
-      if (r.ok && r.member) {
-        setSession(r.member);
-        await loadAll();
-      } else {
-        clearSession();
-      }
-    } else {
-      // لا يوجد API بعد — امسح الجلسة لعرض شاشة الدخول
-      clearSession();
+  const cached = loadLocal();
+
+  if (cached && cached.member) {
+    // استرجاع فوري من الذاكرة (بدون استدعاء)
+    state.member = cached.member;
+    state.tasks = cached.tasks || [];
+    state.myTasks = cached.myTasks || { reserved: [], submitted: [], approved: [] };
+    state.balance = cached.balance || null;
+    state.lastTasksFetch = cached.lastTasksFetch || 0;
+    state.lastBalanceFetch = cached.lastBalanceFetch || 0;
+    state.lastSyncAt = cached.lastSyncAt || 0;
+    renderSession();
+    renderTasks();
+    renderMyTasks();
+    renderAccount();
+    switchTab("tasks");
+
+    // تحديث صامت إذا تجاوزت المهام ساعة
+    if (Date.now() - state.lastTasksFetch > TTL_TASKS) {
+      syncSilent();
     }
   } else {
     renderSession();
+    switchAuth("login");
   }
-  switchTab("tasks");
 })();
 </script>
 
