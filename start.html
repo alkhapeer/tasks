@@ -783,22 +783,30 @@ function renderTasks() {
     const badge = isPaid
       ? `<span class="task-badge paid">مدفوعة</span>`
       : `<span class="task-badge mandatory">إلزامية</span>`;
-    const deadline = t.deadline
+
+    // ✅ الوصف — يُعرض فقط إذا موجود
+    const descHtml = (t.description && String(t.description).trim())
+      ? `<p class="task-desc">${esc(String(t.description).slice(0, 160))}${String(t.description).length > 160 ? "…" : ""}</p>`
+      : "";
+
+    // ✅ الموعد النهائي — يُعرض فقط إذا موجود
+    const deadlineHtml = t.deadline
       ? `<div class="deadline" data-deadline="${esc(t.deadline)}">⏱ ${esc(deadlineLabel(t.deadline))}</div>`
       : "";
+
     return `
       <article class="task-card" data-task-id="${esc(t.id)}">
         <div class="task-top">
           <div class="task-title">${esc(t.title || "مهمة")}</div>
           ${badge}
         </div>
-        <p class="task-desc">${esc((t.description || "").slice(0, 160))}${(t.description||"").length > 160 ? "…" : ""}</p>
+        ${descHtml}
         <div class="task-meta">
           <div><span>قيمة المهمة</span><strong>${esc(fmtMoney(t.value))}</strong></div>
           <div><span>العمولة</span><strong class="money">${esc(fmtMoney(t.commission))}</strong></div>
           <div><span>المقاعد المتبقية</span><strong>${esc(t.seats_left ?? "—")}</strong></div>
         </div>
-        ${deadline}
+        ${deadlineHtml}
         <div class="task-actions">
           <button class="btn btn-secondary btn-small" data-act="details" data-id="${esc(t.id)}">عرض التفاصيل</button>
           <button class="btn btn-primary btn-small" data-act="reserve" data-id="${esc(t.id)}">حجز المهمة</button>
