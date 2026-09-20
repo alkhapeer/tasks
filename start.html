@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5b4bdb"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json"><title>ابدأ الآن | Hero Tasks</title>
+<style>
+:root{--p:#5b4bdb;--a:#7c3aed;--bg:#f8fafc;--t:#172033;--m:#64748b;--b:#e2e8f0;--w:#fff}*{box-sizing:border-box}body{margin:0;font-family:Arial,"Cairo",sans-serif;background:var(--bg);color:var(--t);line-height:1.8}.container{width:min(920px,92%);margin:auto}header{background:var(--w);border-bottom:1px solid var(--b);padding:1rem 0}.head{display:flex;align-items:center;justify-content:space-between;gap:1rem}.logo{text-decoration:none;color:var(--t);font-weight:800;font-size:1.15rem}.logo small{display:block;color:var(--m);font-size:.72rem}.back{color:var(--p);text-decoration:none;font-weight:700}main{padding:4rem 0}.box{background:var(--w);border:1px solid var(--b);border-radius:24px;padding:2rem;box-shadow:0 15px 40px rgba(15,23,42,.06);text-align:center}h1{margin:.2rem 0 1rem;font-size:clamp(2rem,5vw,3rem)}.lead{color:var(--m);font-size:1.05rem;margin-bottom:2rem}.actions{display:flex;flex-direction:column;gap:1rem;max-width:420px;margin:auto}.btn{display:block;width:100%;border:0;border-radius:14px;padding:1rem 1.2rem;font-size:1rem;font-weight:800;cursor:pointer;text-decoration:none}.primary{background:linear-gradient(135deg,var(--p),var(--a));color:#fff}.secondary{background:#fff;color:var(--t);border:1px solid var(--b)}.status{margin-top:1.5rem;padding:1rem;border-radius:14px;background:#f8fafc;border:1px solid var(--b);color:var(--m);font-size:.92rem}.steps{margin:2rem auto 0;max-width:650px;text-align:right}.steps div{padding:.8rem 0;border-bottom:1px solid var(--b)}.steps div:last-child{border-bottom:0}
+</style></head><body>
+<header><div class="container head"><a class="logo" href="index.html">هيرو تاسك<small>Hero Tasks</small></a><a class="back" href="index.html">العودة للموقع</a></div></header>
+<main><div class="container"><section class="box">
+<h1>ابدأ مع Hero Tasks</h1><p class="lead">استخدم تطبيق المهام كطريقة أساسية للوصول إلى المهام وحسابك، مع إبقاء Telegram كخيار احتياطي.</p>
+<div class="actions"><button class="btn primary" id="installBtn" type="button">تثبيت تطبيق Hero Tasks</button><a class="btn secondary" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">استخدام Telegram كخيار احتياطي</a></div>
+<div class="status" id="status">اضغط على زر التثبيت. إذا كان التثبيت المباشر متاحًا سيظهر طلب التثبيت.</div>
+<div class="steps"><div>1. ثبّت التطبيق على جهازك.</div><div>2. افتح التطبيق من أيقونته بعد التثبيت.</div><div>3. أكمل بياناتك وانتظر تفعيل الحساب.</div><div>4. بعد التفعيل ستتمكن من الوصول إلى المهام والرصيد وطلب السحب.</div></div>
+</section></div></main>
+<script>
+let deferredInstallPrompt=null;const btn=document.getElementById("installBtn"),status=document.getElementById("status");
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;status.textContent="التطبيق جاهز للتثبيت. اضغط على زر التثبيت."});
+btn.addEventListener("click",async()=>{if(deferredInstallPrompt){deferredInstallPrompt.prompt();const r=await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;status.textContent=r.outcome==="accepted"?"تم اختيار تثبيت التطبيق.":"تم إلغاء التثبيت. يمكنك المحاولة مرة أخرى.";return}if(window.matchMedia("(display-mode: standalone)").matches){status.textContent="التطبيق مثبت ومفتوح بالفعل.";return}status.textContent="التثبيت المباشر غير متاح حاليًا في هذا المتصفح. في Chrome افتح قائمة المتصفح ثم اختر «تثبيت التطبيق» أو «Install app»."});
+window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;status.textContent="تم تثبيت Hero Tasks بنجاح."});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).catch(()=>{status.textContent="تعذر تسجيل Service Worker. تأكد أن الموقع يعمل عبر HTTPS."}));
+</script></body></html>
