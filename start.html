@@ -714,7 +714,20 @@ $$(".nav-item").forEach(b => b.addEventListener("click", () => switchTab(b.datas
 async function syncSilent() {
   if (!state.member) return;
   const r = await api("sync", { member_id: state.member.id });
-  if (r.ok) applyServerData(r);
+
+  if (r.ok) {
+    applyServerData(r);
+  } else if (r.message && r.message.includes("غير موجود")) {
+    // ⚠️ العضو حُذف من الشيت → أخرجه تلقائيًا
+    clearLocal();
+    state.member = null;
+    state.tasks = [];
+    state.myTasks = { reserved: [], submitted: [], approved: [] };
+    state.balance = null;
+    renderSession();
+    switchAuth("login");
+    toast("تم إنهاء جلستك. يرجى التواصل مع المشرف.", "err");
+  }
 }
 
 /* ---------- Refresh (يدوي، throttled) ---------- */
