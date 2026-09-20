@@ -1,23 +1,1198 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#5b4bdb"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.json"><title>ابدأ الآن | Hero Tasks</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>تطبيق المهام | Hero Tasks</title>
+<meta name="description" content="تطبيق Hero Tasks لتنفيذ المهام ومتابعة العمولات." />
+<meta name="theme-color" content="#6d28d9" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Hero Tasks" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <style>
-:root{--p:#5b4bdb;--a:#7c3aed;--bg:#f8fafc;--t:#172033;--m:#64748b;--b:#e2e8f0;--w:#fff}*{box-sizing:border-box}body{margin:0;font-family:Arial,"Cairo",sans-serif;background:var(--bg);color:var(--t);line-height:1.8}.container{width:min(920px,92%);margin:auto}header{background:var(--w);border-bottom:1px solid var(--b);padding:1rem 0}.head{display:flex;align-items:center;justify-content:space-between;gap:1rem}.logo{text-decoration:none;color:var(--t);font-weight:800;font-size:1.15rem}.logo small{display:block;color:var(--m);font-size:.72rem}.back{color:var(--p);text-decoration:none;font-weight:700}main{padding:4rem 0}.box{background:var(--w);border:1px solid var(--b);border-radius:24px;padding:2rem;box-shadow:0 15px 40px rgba(15,23,42,.06);text-align:center}h1{margin:.2rem 0 1rem;font-size:clamp(2rem,5vw,3rem)}.lead{color:var(--m);font-size:1.05rem;margin-bottom:2rem}.actions{display:flex;flex-direction:column;gap:1rem;max-width:420px;margin:auto}.btn{display:block;width:100%;border:0;border-radius:14px;padding:1rem 1.2rem;font-size:1rem;font-weight:800;cursor:pointer;text-decoration:none}.primary{background:linear-gradient(135deg,var(--p),var(--a));color:#fff}.secondary{background:#fff;color:var(--t);border:1px solid var(--b)}.status{margin-top:1.5rem;padding:1rem;border-radius:14px;background:#f8fafc;border:1px solid var(--b);color:var(--m);font-size:.92rem}.steps{margin:2rem auto 0;max-width:650px;text-align:right}.steps div{padding:.8rem 0;border-bottom:1px solid var(--b)}.steps div:last-child{border-bottom:0}
-</style></head><body>
-<header><div class="container head"><a class="logo" href="index.html">هيرو تاسك<small>Hero Tasks</small></a><a class="back" href="index.html">العودة للموقع</a></div></header>
-<main><div class="container"><section class="box">
-<h1>ابدأ مع Hero Tasks</h1><p class="lead">استخدم تطبيق المهام كطريقة أساسية للوصول إلى المهام وحسابك، مع إبقاء Telegram كخيار احتياطي.</p>
-<div class="actions"><button class="btn primary" id="installBtn" type="button">تثبيت تطبيق Hero Tasks</button><a class="btn secondary" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">استخدام Telegram كخيار احتياطي</a></div>
-<div class="status" id="status">اضغط على زر التثبيت. إذا كان التثبيت المباشر متاحًا سيظهر طلب التثبيت.</div>
-<div class="steps"><div>1. ثبّت التطبيق على جهازك.</div><div>2. افتح التطبيق من أيقونته بعد التثبيت.</div><div>3. أكمل بياناتك وانتظر تفعيل الحساب.</div><div>4. بعد التفعيل ستتمكن من الوصول إلى المهام والرصيد وطلب السحب.</div></div>
-</section></div></main>
+  :root{
+    --p:#6d28d9; --p-dark:#4c1d95; --a:#0ea5e9;
+    --bg:#f8fafc; --card:#fff; --text:#0f172a; --muted:#475569;
+    --border:#e2e8f0; --ok:#10b981; --warn:#f59e0b; --danger:#dc2626;
+    --radius:16px; --shadow:0 10px 30px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Cairo',system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.7;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  [hidden]{display:none !important}
+
+  /* ---------- Header ---------- */
+  .app-header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding-top:env(safe-area-inset-top);
+  }
+  .header-inner{
+    width:min(1120px,94%);margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:.6rem;padding:.6rem 0;
+  }
+  .brand{display:flex;align-items:center;gap:.6rem;font-weight:800}
+  .brand-mark{
+    display:grid;place-items:center;width:36px;height:36px;border-radius:11px;
+    background:linear-gradient(135deg,var(--p),var(--a));color:#fff;font-size:1.05rem;
+  }
+  .brand-text{display:flex;flex-direction:column;line-height:1.1}
+  .brand-text strong{font-size:.95rem}
+  .brand-text small{font-size:.65rem;color:var(--muted);font-weight:600}
+  .header-actions{display:flex;align-items:center;gap:.5rem}
+  .status-pill{
+    font-size:.72rem;font-weight:700;padding:.28rem .6rem;border-radius:999px;
+    background:#f1f5f9;color:var(--muted);white-space:nowrap;
+  }
+  .status-pill[data-status="pending"]{background:#fef3c7;color:#92400e}
+  .status-pill[data-status="active"]{background:#d1fae5;color:#065f46}
+  .status-pill[data-status="suspended"]{background:#fee2e2;color:#991b1b}
+  .icon-btn{
+    display:grid;place-items:center;width:36px;height:36px;border-radius:11px;
+    border:1px solid var(--border);background:#fff;color:var(--text);
+    font-size:1rem;cursor:pointer;transition:.15s;
+  }
+  .icon-btn:hover{border-color:var(--p);color:var(--p)}
+  .icon-btn.is-accent{background:linear-gradient(135deg,var(--p),var(--p-dark));color:#fff;border-color:transparent}
+
+  /* ---------- Layout ---------- */
+  .app-main{width:min(1120px,94%);margin:0 auto;padding:1.2rem 0 6rem}
+  .offline-banner{
+    background:#fff7ed;border-bottom:1px solid #fed7aa;color:#9a3412;
+    padding:.5rem 1rem;font-size:.82rem;text-align:center;font-weight:600;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+    border-radius:12px;padding:.75rem 1.1rem;font-weight:700;font-size:.92rem;
+    border:1px solid transparent;cursor:pointer;transition:.18s;text-align:center;
+    background:#fff;color:var(--text);
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--p),var(--p-dark));color:#fff;box-shadow:0 8px 20px rgba(109,40,217,.22)}
+  .btn-primary:hover{transform:translateY(-1px)}
+  .btn-secondary{background:#fff;border-color:var(--border);color:var(--text)}
+  .btn-secondary:hover{border-color:var(--p);color:var(--p)}
+  .btn-ghost{background:transparent;border-color:transparent;color:var(--p)}
+  .btn-ghost:hover{background:#f5f3ff}
+  .btn-danger{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+  .btn-small{padding:.5rem .8rem;font-size:.8rem;border-radius:10px}
+  .btn-block{width:100%}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none !important}
+
+  /* ---------- Auth view ---------- */
+  .auth-card{
+    max-width:520px;margin:1.5rem auto;background:#fff;border:1px solid var(--border);
+    border-radius:22px;padding:1.6rem;box-shadow:var(--shadow);
+  }
+  .auth-head{text-align:center;margin-bottom:1.2rem}
+  .auth-head h1{font-size:clamp(1.3rem,4vw,1.7rem);margin-bottom:.3rem}
+  .auth-head p{color:var(--muted);font-size:.9rem}
+  .auth-tabs{display:flex;background:#f1f5f9;border-radius:12px;padding:.25rem;margin-bottom:1.2rem}
+  .auth-tab{
+    flex:1;border:0;background:transparent;padding:.55rem;border-radius:9px;
+    font-weight:700;color:var(--muted);cursor:pointer;font-size:.9rem;
+  }
+  .auth-tab.is-active{background:#fff;color:var(--p);box-shadow:0 2px 6px rgba(15,23,42,.06)}
+  .auth-form{display:grid;gap:.8rem}
+  .auth-form label{display:grid;gap:.3rem;font-size:.85rem;font-weight:700;color:var(--text)}
+  .auth-form input{
+    font-family:inherit;font-size:.95rem;padding:.7rem .85rem;border-radius:11px;
+    border:1px solid var(--border);background:var(--bg);color:var(--text);
+  }
+  .auth-form input:focus{outline:none;border-color:var(--p);background:#fff}
+  .hint{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.3rem}
+
+  /* ---------- Panel ---------- */
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+    margin-bottom:.9rem;
+  }
+  .panel-head h2{font-size:1.15rem}
+  .panel-head h3{font-size:1rem;color:var(--muted)}
+
+  .filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+  .chip{
+    border:1px solid var(--border);background:#fff;color:var(--muted);
+    padding:.4rem .85rem;border-radius:999px;font-size:.82rem;font-weight:700;
+    cursor:pointer;transition:.15s;
+  }
+  .chip.is-active{background:var(--p);color:#fff;border-color:var(--p)}
+
+  .list{display:grid;gap:.9rem}
+
+  /* ---------- Task card ---------- */
+  .task-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:1.1rem;box-shadow:var(--shadow);display:grid;gap:.6rem;
+  }
+  .task-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem}
+  .task-title{font-size:1rem;font-weight:800;line-height:1.4}
+  .task-badge{
+    font-size:.68rem;font-weight:800;padding:.25rem .55rem;border-radius:999px;
+    white-space:nowrap;
+  }
+  .task-badge.paid{background:#d1fae5;color:#065f46}
+  .task-badge.mandatory{background:#fef3c7;color:#92400e}
+  .task-badge.reserved{background:#dbeafe;color:#1e40af}
+  .task-badge.submitted{background:#fef3c7;color:#92400e}
+  .task-badge.approved{background:#d1fae5;color:#065f46}
+  .task-badge.rejected{background:#fee2e2;color:#991b1b}
+  .task-desc{color:var(--muted);font-size:.88rem;line-height:1.6}
+  .task-meta{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;
+    background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.6rem;
+  }
+  .task-meta > div{text-align:center}
+  .task-meta span{display:block;font-size:.68rem;color:var(--muted);font-weight:700}
+  .task-meta strong{font-size:.9rem;color:var(--text)}
+  .task-meta strong.money{color:var(--ok)}
+  .task-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+  .task-actions .btn{flex:1;min-width:120px}
+  .deadline{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
+  .deadline.is-urgent{color:var(--danger);font-weight:700}
+
+  /* ---------- Balance ---------- */
+  .balance-card{
+    background:linear-gradient(135deg,var(--p-dark),var(--p) 60%,var(--a));
+    color:#fff;border-radius:22px;padding:1.6rem;text-align:center;
+    box-shadow:0 15px 40px rgba(109,40,217,.25);margin-bottom:1rem;
+  }
+  .balance-label{font-size:.85rem;opacity:.85;font-weight:600}
+  .balance-amount{font-size:2.4rem;font-weight:800;line-height:1.2;margin:.3rem 0}
+  .balance-amount::after{content:" $";font-size:1.1rem;opacity:.85;font-weight:700}
+  .balance-status{
+    display:inline-block;font-size:.78rem;font-weight:700;
+    background:rgba(255,255,255,.18);padding:.25rem .7rem;border-radius:999px;
+    margin-top:.3rem;
+  }
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
+  .stat{
+    background:#fff;border:1px solid var(--border);border-radius:14px;padding:.9rem;text-align:center;
+  }
+  .stat span{display:block;font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:.2rem}
+  .stat strong{font-size:1.1rem;color:var(--text)}
+
+  /* ---------- Profile ---------- */
+  .profile-card,.supervisor-card{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:1rem;box-shadow:var(--shadow);display:grid;gap:.1rem;
+  }
+  .profile-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:.65rem 0;border-bottom:1px solid var(--border);font-size:.88rem;
+  }
+  .profile-row:last-child{border-bottom:0}
+  .profile-row span{color:var(--muted);font-weight:600}
+  .profile-row strong{color:var(--text);font-weight:700;text-align:left}
+  .supervisor-card{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+  .supervisor-card small{color:var(--muted)}
+  .account-actions{display:grid;gap:.5rem}
+
+  /* ---------- Empty / loading ---------- */
+  .empty{
+    background:#fff;border:1px dashed var(--border);border-radius:var(--radius);
+    padding:2rem 1rem;text-align:center;color:var(--muted);
+  }
+  .empty .ico{font-size:1.8rem;display:block;margin-bottom:.4rem;opacity:.5}
+  .loading{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:1.5rem;text-align:center;color:var(--muted);font-size:.88rem;
+  }
+  .spinner{
+    display:inline-block;width:16px;height:16px;border:2px solid var(--border);
+    border-top-color:var(--p);border-radius:50%;animation:spin .7s linear infinite;
+    vertical-align:middle;margin-inline-end:.4rem;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:35;
+    display:grid;grid-template-columns:repeat(4,1fr);
+    background:rgba(255,255,255,.97);backdrop-filter:blur(14px);
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .nav-item{
+    border:0;background:transparent;padding:.55rem .2rem .6rem;
+    display:flex;flex-direction:column;align-items:center;gap:.15rem;
+    color:var(--muted);font-size:.7rem;font-weight:700;cursor:pointer;
+    transition:.15s;
+  }
+  .nav-item span{font-size:1.15rem;line-height:1}
+  .nav-item.is-active{color:var(--p)}
+  .nav-item.is-active span{transform:translateY(-1px)}
+
+  /* ---------- Bottom sheet ---------- */
+  .sheet{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+  .sheet-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.45);animation:fade .2s}
+  .sheet-body{
+    position:relative;width:min(560px,100%);max-height:88vh;overflow-y:auto;
+    background:#fff;border-radius:22px 22px 0 0;
+    padding:1rem 1.1rem calc(1.4rem + env(safe-area-inset-bottom));
+    animation:up .25s ease-out;
+  }
+  .sheet-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:.8rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);
+  }
+  .sheet-head h3{font-size:1.05rem}
+  .sheet-content{display:grid;gap:.8rem}
+  .sheet-content p{color:var(--muted);font-size:.9rem}
+  .sheet-content .field{display:grid;gap:.3rem;font-size:.85rem;font-weight:700}
+  .sheet-content .field input,
+  .sheet-content .field textarea,
+  .sheet-content .field select{
+    font-family:inherit;font-size:.92rem;padding:.65rem .8rem;border-radius:11px;
+    border:1px solid var(--border);background:var(--bg);color:var(--text);
+  }
+  .sheet-content .field input:focus,
+  .sheet-content .field textarea:focus{outline:none;border-color:var(--p);background:#fff}
+  .sheet-content textarea{min-height:80px;resize:vertical}
+  @keyframes fade{from{opacity:0}}
+  @keyframes up{from{transform:translateY(20px);opacity:.6}}
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;
+    transform:translateX(-50%);z-index:80;
+    background:#0f172a;color:#fff;padding:.6rem 1rem;border-radius:12px;
+    font-size:.85rem;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.2);
+    animation:fade .2s;max-width:90vw;text-align:center;
+  }
+  .toast.ok{background:#065f46}
+  .toast.err{background:#991b1b}
+
+  /* ---------- Responsive ---------- */
+  @media (min-width:720px){
+    .app-main{padding-bottom:2rem}
+    .bottom-nav{
+      position:sticky;bottom:0;max-width:640px;margin:0 auto;
+      border-radius:18px 18px 0 0;border:1px solid var(--border);border-bottom:0;
+    }
+    .task-meta{grid-template-columns:repeat(3,1fr)}
+    .sheet{align-items:center}
+    .sheet-body{border-radius:22px;max-height:80vh;padding:1.2rem 1.4rem}
+  }
+  @media (max-width:400px){
+    .brand-text strong{font-size:.85rem}
+    .brand-text small{display:none}
+  }
+</style>
+</head>
+
+<body>
+
+<div class="offline-banner" id="offlineBanner" hidden>
+  ⚠️ لم يتم ربط Google Apps Script بعد — الواجهة جاهزة، والبيانات ستظهر بعد الربط.
+</div>
+
+<!-- ================= Header ================= -->
+<header class="app-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html" aria-label="Hero Tasks">
+      <span class="brand-mark">H</span>
+      <span class="brand-text">
+        <strong>هيرو تاسك</strong>
+        <small>Hero Tasks</small>
+      </span>
+    </a>
+
+    <div class="header-actions">
+      <span class="status-pill" id="accountStatus" data-status="guest">غير مسجل</span>
+      <button class="icon-btn" id="installBtn" type="button" hidden title="تثبيت التطبيق" aria-label="تثبيت التطبيق">⬇</button>
+      <button class="icon-btn" id="refreshBtn" type="button" title="تحديث" aria-label="تحديث" hidden>↻</button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= Main ================= -->
+<main class="app-main">
+
+  <!-- ====== AUTH VIEW ====== -->
+  <section class="view" id="viewAuth">
+    <div class="auth-card">
+      <div class="auth-head">
+        <h1>مرحبًا بك في Hero Tasks</h1>
+        <p>سجّل دخولك أو أنشئ حسابًا جديدًا للبدء في تنفيذ المهام.</p>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab is-active" data-auth="login" type="button">تسجيل الدخول</button>
+        <button class="auth-tab" data-auth="register" type="button">إنشاء حساب</button>
+      </div>
+
+      <form class="auth-form" id="loginForm" data-form="login">
+        <label>
+          رقم العضوية أو اسم Telegram
+          <input name="identifier" required placeholder="مثال: 1001 أو @username" autocomplete="username" />
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">دخول</button>
+        <p class="hint">إذا فقدت رقم عضويتك، تواصل مع المشرف عبر Telegram.</p>
+      </form>
+
+      <form class="auth-form" id="registerForm" data-form="register" hidden>
+        <label>الاسم الكامل <input name="name" required autocomplete="name" /></label>
+        <label>الدولة <input name="country" required autocomplete="country-name" /></label>
+        <label>اسم Telegram <input name="telegram" required placeholder="@username" dir="ltr" /></label>
+        <label>البريد الإلكتروني (اختياري) <input name="email" type="email" dir="ltr" autocomplete="email" /></label>
+        <label>رقم الهاتف (اختياري) <input name="phone" dir="ltr" inputmode="tel" autocomplete="tel" /></label>
+        <button class="btn btn-primary btn-block" type="submit">إنشاء الحساب</button>
+        <p class="hint">بعد التسجيل، تتم مراجعة بياناتك من المشرف لتفعيل الحساب.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ====== APP VIEW ====== -->
+  <section class="view" id="viewApp" hidden>
+
+    <!-- TASKS -->
+    <div class="tab-panel" data-panel="tasks">
+      <div class="panel-head">
+        <h2>المهام المتاحة</h2>
+        <button class="btn btn-ghost btn-small" id="refreshTasks" type="button">تحديث</button>
+      </div>
+      <div class="filters" id="taskFilters">
+        <button class="chip is-active" data-filter="all" type="button">الكل</button>
+        <button class="chip" data-filter="paid" type="button">مدفوعة</button>
+        <button class="chip" data-filter="mandatory" type="button">إلزامية</button>
+      </div>
+      <div class="list" id="tasksList"></div>
+    </div>
+
+    <!-- MY TASKS -->
+    <div class="tab-panel" data-panel="mytasks" hidden>
+      <div class="panel-head">
+        <h2>مهامي</h2>
+        <button class="btn btn-ghost btn-small" id="refreshMyTasks" type="button">تحديث</button>
+      </div>
+      <div class="filters" id="myTaskFilters">
+        <button class="chip is-active" data-mfilter="reserved" type="button">المحجوزة</button>
+        <button class="chip" data-mfilter="submitted" type="button">المرسلة</button>
+        <button class="chip" data-mfilter="approved" type="button">المعتمدة</button>
+      </div>
+      <div class="list" id="myTasksList"></div>
+    </div>
+
+    <!-- BALANCE -->
+    <div class="tab-panel" data-panel="balance" hidden>
+      <div class="panel-head">
+        <h2>رصيدي</h2>
+        <button class="btn btn-ghost btn-small" id="refreshBalance" type="button">تحديث</button>
+      </div>
+
+      <div class="balance-card">
+        <div class="balance-label">الرصيد الحالي</div>
+        <div class="balance-amount" id="balanceAmount">0</div>
+        <div class="balance-status" id="balanceStatus">—</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat"><span>إجمالي العمولات</span><strong id="totalEarned">0</strong></div>
+        <div class="stat"><span>مهام معتمدة</span><strong id="approvedCount">0</strong></div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="withdrawBtn" type="button" disabled>طلب السحب</button>
+
+      <div class="panel-head" style="margin-top:1.6rem">
+        <h3>سجل طلبات السحب</h3>
+      </div>
+      <div class="list" id="withdrawalsList"></div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="tab-panel" data-panel="account" hidden>
+      <div class="panel-head"><h2>حسابي</h2></div>
+
+      <div class="profile-card">
+        <div class="profile-row"><span>الاسم</span><strong id="pName">—</strong></div>
+        <div class="profile-row"><span>رقم العضوية</span><strong id="pId" dir="ltr">—</strong></div>
+        <div class="profile-row"><span>الدولة</span><strong id="pCountry">—</strong></div>
+        <div class="profile-row"><span>Telegram</span><strong id="pTelegram" dir="ltr">—</strong></div>
+        <div class="profile-row"><span>حالة التفعيل</span><strong id="pStatus">—</strong></div>
+      </div>
+
+      <div class="panel-head" style="margin-top:1.6rem"><h3>المشرف المسؤول</h3></div>
+      <div class="supervisor-card">
+        <div>
+          <strong id="pSupervisor">—</strong><br>
+          <small id="pSupervisorContact">—</small>
+        </div>
+        <a class="btn btn-secondary btn-small" id="contactSupervisor" href="#" target="_blank" rel="noopener">تواصل</a>
+      </div>
+
+      <div class="panel-head" style="margin-top:1.6rem"><h3>خيارات</h3></div>
+      <div class="account-actions">
+        <a class="btn btn-secondary" href="https://t.me/hero_tasks_bot" target="_blank" rel="noopener">Telegram — خيار احتياطي</a>
+        <a class="btn btn-secondary" href="mailto:info@hero1.vip">مراسلة الدعم</a>
+        <button class="btn btn-danger" id="logoutBtn" type="button">تسجيل الخروج</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<!-- ================= Bottom nav ================= -->
+<nav class="bottom-nav" id="bottomNav" hidden>
+  <button class="nav-item is-active" data-tab="tasks" type="button"><span>🧩</span>المهام</button>
+  <button class="nav-item" data-tab="mytasks" type="button"><span>📋</span>مهامي</button>
+  <button class="nav-item" data-tab="balance" type="button"><span>💰</span>رصيدي</button>
+  <button class="nav-item" data-tab="account" type="button"><span>👤</span>حسابي</button>
+</nav>
+
+<!-- ================= Bottom sheet ================= -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-backdrop" data-close-sheet></div>
+  <div class="sheet-body" role="dialog" aria-modal="true">
+    <div class="sheet-head">
+      <h3 id="sheetTitle">—</h3>
+      <button class="icon-btn" type="button" data-close-sheet aria-label="إغلاق">✕</button>
+    </div>
+    <div class="sheet-content" id="sheetContent"></div>
+  </div>
+</div>
+
+<!-- ================= Toast ================= -->
+<div class="toast" id="toast" hidden></div>
+
 <script>
-let deferredInstallPrompt=null;const btn=document.getElementById("installBtn"),status=document.getElementById("status");
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;status.textContent="التطبيق جاهز للتثبيت. اضغط على زر التثبيت."});
-btn.addEventListener("click",async()=>{if(deferredInstallPrompt){deferredInstallPrompt.prompt();const r=await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;status.textContent=r.outcome==="accepted"?"تم اختيار تثبيت التطبيق.":"تم إلغاء التثبيت. يمكنك المحاولة مرة أخرى.";return}if(window.matchMedia("(display-mode: standalone)").matches){status.textContent="التطبيق مثبت ومفتوح بالفعل.";return}status.textContent="التثبيت المباشر غير متاح حاليًا في هذا المتصفح. في Chrome افتح قائمة المتصفح ثم اختر «تثبيت التطبيق» أو «Install app»."});
-window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;status.textContent="تم تثبيت Hero Tasks بنجاح."});
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).catch(()=>{status.textContent="تعذر تسجيل Service Worker. تأكد أن الموقع يعمل عبر HTTPS."}));
-</script></body></html>
+/* ============================================================
+   Hero Tasks — App (start.html)
+   ------------------------------------------------------------
+   يربط هذا الملف بواجهة Google Apps Script الحالية.
+   ضع رابط Web App في المتغير API_URL أدناه.
+   ============================================================ */
+
+const API_URL = ""; // ← ضع هنا رابط Google Apps Script (ينتهي بـ /exec)
+const SESSION_KEY = "hero_member_id";
+const TELEGRAM_FALLBACK = "https://t.me/hero_tasks_bot";
+
+/* ------------------------------------------------------------
+   Actions المتوقعة من Google Apps Script:
+   ------------------------------------------------------------
+   POST { action: "register", name, country, telegram, email, phone }
+     → { ok:true, member:{ id, name, country, telegram, status, supervisor, supervisor_contact } }
+
+   POST { action: "login", identifier }
+     → { ok:true, member:{...} } | { ok:false, message }
+
+   POST { action: "getProfile", member_id }
+     → { ok:true, member:{...} }
+
+   POST { action: "getTasks", member_id }
+     → { ok:true, tasks:[ { id, title, description, type:"paid"|"mandatory",
+                            value, commission, seats_left, deadline } ] }
+
+   POST { action: "reserveTask", member_id, task_id }
+     → { ok:true, message }
+
+   POST { action: "getMyTasks", member_id }
+     → { ok:true,
+         reserved:[ { completion_id, task_id, title, description, deadline,
+                      value, commission, type } ],
+         submitted:[ {...} ],
+         approved:[ {...} ] }
+
+   POST { action: "submitProof", member_id, completion_id, proof_url, notes }
+     → { ok:true, message }
+
+   POST { action: "getBalance", member_id }
+     → { ok:true, current, total, approved_count, ready:true|false,
+         withdrawals:[ { id, amount, status, created_at } ] }
+
+   POST { action: "requestWithdraw", member_id, amount, method, account }
+     → { ok:true, message }
+
+   ------------------------------------------------------------
+   جداول Sheets المتوقعة (للتوافق):
+     Members      : id | name | country | telegram | email | phone |
+                    status | supervisor | supervisor_contact | created_at
+     Tasks        : id | title | description | type | value | commission |
+                    seats | seats_left | deadline | status
+     Completions  : id | member_id | task_id | status | proof_url | notes |
+                    reserved_at | submitted_at | approved_at
+     Commissions  : id | member_id | task_id | amount | status | created_at
+     Withdrawals  : id | member_id | amount | method | account | status | created_at
+   ============================================================ */
+
+/* ---------- State ---------- */
+const state = {
+  member: null,
+  tasks: [],
+  taskFilter: "all",
+  myTasks: { reserved: [], submitted: [], approved: [] },
+  myFilter: "reserved",
+  balance: null,
+  tab: "tasks",
+  installPrompt: null,
+  loading: false
+};
+
+/* ---------- DOM helpers ---------- */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+/* ---------- API ---------- */
+async function api(action, payload = {}) {
+  if (!API_URL) {
+    return { ok:false, offline:true, message:"لم يتم ربط Google Apps Script بعد." };
+  }
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      // text/plain يتجنب CORS preflight مع GAS
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, ...payload })
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    return { ok:false, message:"تعذر الاتصال بالخادم." };
+  }
+}
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg, type="") {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.className = "toast" + (type ? " " + type : "");
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3200);
+}
+
+/* ---------- Sheet ---------- */
+function openSheet(title, contentNode) {
+  $("#sheetTitle").textContent = title;
+  const content = $("#sheetContent");
+  content.innerHTML = "";
+  if (typeof contentNode === "string") content.innerHTML = contentNode;
+  else content.appendChild(contentNode);
+  $("#sheet").hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function closeSheet() {
+  $("#sheet").hidden = true;
+  document.body.style.overflow = "";
+}
+document.addEventListener("click", (e) => {
+  if (e.target.closest("[data-close-sheet]")) closeSheet();
+});
+
+/* ---------- Format helpers ---------- */
+function fmtMoney(n) {
+  const v = Number(n || 0);
+  return v.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
+}
+function fmtDate(d) {
+  if (!d) return "—";
+  const t = new Date(d);
+  if (isNaN(t)) return String(d);
+  try {
+    return t.toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" });
+  } catch { return String(d); }
+}
+function deadlineLabel(d) {
+  if (!d) return "—";
+  const t = new Date(d);
+  if (isNaN(t)) return String(d);
+  const diff = t.getTime() - Date.now();
+  if (diff <= 0) return "انتهت المهلة";
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 0) return `باقي ${days} يوم`;
+  if (hours > 0) return `باقي ${hours} ساعة`;
+  return "أقل من ساعة";
+}
+
+/* ---------- Auth view ---------- */
+function switchAuth(mode) {
+  $$(".auth-tab").forEach(b => b.classList.toggle("is-active", b.dataset.auth === mode));
+  $("#loginForm").hidden = mode !== "login";
+  $("#registerForm").hidden = mode !== "register";
+}
+$$(".auth-tab").forEach(b => b.addEventListener("click", () => switchAuth(b.dataset.auth)));
+
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const identifier = e.target.identifier.value.trim();
+  if (!identifier) return;
+  if (!API_URL) { toast("الربط بالخادم لم يتم بعد.", "err"); return; }
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = "جارٍ الدخول…";
+  const r = await api("login", { identifier });
+  btn.disabled = false; btn.textContent = "دخول";
+  if (r.ok && r.member) {
+    setSession(r.member);
+    toast("تم تسجيل الدخول بنجاح.", "ok");
+    await loadAll();
+  } else {
+    toast(r.message || "تعذر تسجيل الدخول.", "err");
+  }
+});
+
+$("#registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!API_URL) { toast("الربط بالخادم لم يتم بعد.", "err"); return; }
+  const f = e.target;
+  const payload = {
+    name: f.name.value.trim(),
+    country: f.country.value.trim(),
+    telegram: f.telegram.value.trim(),
+    email: f.email.value.trim(),
+    phone: f.phone.value.trim()
+  };
+  if (!payload.name || !payload.country || !payload.telegram) {
+    toast("يرجى إكمال الحقول المطلوبة.", "err"); return;
+  }
+  const btn = f.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = "جارٍ الإنشاء…";
+  const r = await api("register", payload);
+  btn.disabled = false; btn.textContent = "إنشاء الحساب";
+  if (r.ok && r.member) {
+    setSession(r.member);
+    toast("تم إنشاء الحساب. بانتظار التفعيل من المشرف.", "ok");
+    await loadAll();
+  } else {
+    toast(r.message || "تعذر إنشاء الحساب.", "err");
+  }
+});
+
+/* ---------- Session ---------- */
+function setSession(member) {
+  state.member = member;
+  if (member && member.id != null) {
+    try { localStorage.setItem(SESSION_KEY, String(member.id)); } catch {}
+  }
+  renderSession();
+}
+function clearSession() {
+  state.member = null;
+  try { localStorage.removeItem(SESSION_KEY); } catch {}
+  renderSession();
+}
+function getStoredId() {
+  try { return localStorage.getItem(SESSION_KEY); } catch { return null; }
+}
+
+/* ---------- Render session state ---------- */
+function renderSession() {
+  const authed = !!state.member;
+  $("#viewAuth").hidden = authed;
+  $("#viewApp").hidden = !authed;
+  $("#bottomNav").hidden = !authed;
+  $("#refreshBtn").hidden = !authed;
+
+  const pill = $("#accountStatus");
+  if (!authed) {
+    pill.dataset.status = "guest";
+    pill.textContent = "غير مسجل";
+    return;
+  }
+  const s = (state.member.status || "").toLowerCase();
+  if (s === "active" || s === "مفعل" || s === "approved") {
+    pill.dataset.status = "active"; pill.textContent = "مفعل";
+  } else if (s === "pending" || s === "بانتظار التفعيل" || s === "قيد المراجعة") {
+    pill.dataset.status = "pending"; pill.textContent = "بانتظار التفعيل";
+  } else if (s === "suspended" || s === "موقوف") {
+    pill.dataset.status = "suspended"; pill.textContent = "موقوف";
+  } else {
+    pill.dataset.status = "guest"; pill.textContent = "غير مفعل";
+  }
+}
+
+/* ---------- Tabs ---------- */
+function switchTab(tab) {
+  state.tab = tab;
+  $$(".tab-panel").forEach(p => p.hidden = p.dataset.panel !== tab);
+  $$(".nav-item").forEach(b => b.classList.toggle("is-active", b.dataset.tab === tab));
+  if (tab === "tasks")    loadTasks();
+  if (tab === "mytasks")  loadMyTasks();
+  if (tab === "balance")  loadBalance();
+  if (tab === "account")  renderAccount();
+}
+$$(".nav-item").forEach(b => b.addEventListener("click", () => switchTab(b.dataset.tab)));
+
+/* ---------- Load all ---------- */
+async function loadAll() {
+  if (!state.member) return;
+  await Promise.all([loadTasks(), loadMyTasks(), loadBalance()]);
+  renderAccount();
+}
+
+/* ---------- Tasks ---------- */
+$("#taskFilters").addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip"); if (!chip) return;
+  state.taskFilter = chip.dataset.filter;
+  $$("#taskFilters .chip").forEach(c => c.classList.toggle("is-active", c === chip));
+  renderTasks();
+});
+$("#refreshTasks").addEventListener("click", loadTasks);
+
+async function loadTasks() {
+  if (!state.member) return;
+  const list = $("#tasksList");
+  list.innerHTML = `<div class="loading"><span class="spinner"></span>جارٍ تحميل المهام…</div>`;
+  const r = await api("getTasks", { member_id: state.member.id });
+  if (r.ok && Array.isArray(r.tasks)) {
+    state.tasks = r.tasks;
+  } else {
+    state.tasks = [];
+    if (r.offline) {
+      list.innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.<br><small>بعد الربط ستظهر المهام المتاحة هنا.</small></div>`;
+      return;
+    }
+    toast(r.message || "تعذر تحميل المهام.", "err");
+  }
+  renderTasks();
+}
+
+function renderTasks() {
+  const list = $("#tasksList");
+  const filter = state.taskFilter;
+  const arr = state.tasks.filter(t => filter === "all" ? true : t.type === filter);
+
+  if (!arr.length) {
+    list.innerHTML = `<div class="empty"><span class="ico">🧩</span>لا توجد مهام متاحة حاليًا.</div>`;
+    return;
+  }
+
+  list.innerHTML = arr.map(t => {
+    const isPaid = t.type === "paid";
+    const badge = isPaid
+      ? `<span class="task-badge paid">مدفوعة</span>`
+      : `<span class="task-badge mandatory">إلزامية</span>`;
+    const deadline = t.deadline
+      ? `<div class="deadline" data-deadline="${esc(t.deadline)}">⏱ ${esc(deadlineLabel(t.deadline))}</div>`
+      : "";
+    return `
+      <article class="task-card" data-task-id="${esc(t.id)}">
+        <div class="task-top">
+          <div class="task-title">${esc(t.title || "مهمة")}</div>
+          ${badge}
+        </div>
+        <p class="task-desc">${esc((t.description || "").slice(0, 160))}${(t.description||"").length > 160 ? "…" : ""}</p>
+        <div class="task-meta">
+          <div><span>قيمة المهمة</span><strong>${esc(fmtMoney(t.value))}</strong></div>
+          <div><span>العمولة</span><strong class="money">${esc(fmtMoney(t.commission))}</strong></div>
+          <div><span>المقاعد المتبقية</span><strong>${esc(t.seats_left ?? "—")}</strong></div>
+        </div>
+        ${deadline}
+        <div class="task-actions">
+          <button class="btn btn-secondary btn-small" data-act="details" data-id="${esc(t.id)}">عرض التفاصيل</button>
+          <button class="btn btn-primary btn-small" data-act="reserve" data-id="${esc(t.id)}">حجز المهمة</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  list.querySelectorAll("[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => handleTaskAction(btn.dataset.act, btn.dataset.id));
+  });
+}
+
+function handleTaskAction(act, id) {
+  const t = state.tasks.find(x => String(x.id) === String(id));
+  if (!t) return;
+  if (act === "details") openTaskDetails(t);
+  if (act === "reserve") reserveTask(t);
+}
+
+function openTaskDetails(t) {
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+    <div class="task-meta" style="margin-bottom:.5rem">
+      <div><span>القيمة</span><strong>${esc(fmtMoney(t.value))}</strong></div>
+      <div><span>العمولة</span><strong class="money">${esc(fmtMoney(t.commission))}</strong></div>
+      <div><span>المقاعد</span><strong>${esc(t.seats_left ?? "—")}</strong></div>
+    </div>
+    <p>${esc(t.description || "لا يوجد وصف.")}</p>
+    ${t.requirements ? `<p><strong>المتطلبات:</strong><br>${esc(t.requirements)}</p>` : ""}
+    <div class="deadline">⏱ الموعد النهائي: ${esc(fmtDate(t.deadline))} — ${esc(deadlineLabel(t.deadline))}</div>
+    <button class="btn btn-primary btn-block" id="sheetReserveBtn">حجز المهمة</button>
+  `;
+  openSheet(t.title || "تفاصيل المهمة", wrap);
+  wrap.querySelector("#sheetReserveBtn").addEventListener("click", () => {
+    closeSheet();
+    reserveTask(t);
+  });
+}
+
+async function reserveTask(t) {
+  if (!state.member) return;
+  if (state.member.status && !["active","مفعل","approved"].includes(String(state.member.status).toLowerCase())) {
+    toast("حسابك غير مفعل بعد. يرجى انتظار تفعيل المشرف.", "err");
+    return;
+  }
+  if (!confirm(`هل تريد حجز المهمة: ${t.title}؟`)) return;
+  const r = await api("reserveTask", { member_id: state.member.id, task_id: t.id });
+  if (r.ok) {
+    toast(r.message || "تم حجز المهمة بنجاح.", "ok");
+    await Promise.all([loadTasks(), loadMyTasks()]);
+    switchTab("mytasks");
+  } else {
+    toast(r.message || "تعذر حجز المهمة.", "err");
+  }
+}
+
+/* ---------- My tasks ---------- */
+$("#myTaskFilters").addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip"); if (!chip) return;
+  state.myFilter = chip.dataset.mfilter;
+  $$("#myTaskFilters .chip").forEach(c => c.classList.toggle("is-active", c === chip));
+  renderMyTasks();
+});
+$("#refreshMyTasks").addEventListener("click", loadMyTasks);
+
+async function loadMyTasks() {
+  if (!state.member) return;
+  const list = $("#myTasksList");
+  list.innerHTML = `<div class="loading"><span class="spinner"></span>جارٍ التحميل…</div>`;
+  const r = await api("getMyTasks", { member_id: state.member.id });
+  if (r.ok) {
+    state.myTasks = {
+      reserved:  Array.isArray(r.reserved)  ? r.reserved  : [],
+      submitted: Array.isArray(r.submitted) ? r.submitted : [],
+      approved:  Array.isArray(r.approved)  ? r.approved  : []
+    };
+  } else {
+    state.myTasks = { reserved:[], submitted:[], approved:[] };
+    if (r.offline) {
+      list.innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.</div>`;
+      return;
+    }
+  }
+  renderMyTasks();
+}
+
+function renderMyTasks() {
+  const list = $("#myTasksList");
+  const key = state.myFilter;
+  const arr = state.myTasks[key] || [];
+
+  if (!arr.length) {
+    const msg = key === "reserved" ? "لا توجد مهام محجوزة."
+              : key === "submitted" ? "لا توجد مهام مرسلة للمراجعة."
+              : "لا توجد مهام معتمدة بعد.";
+    list.innerHTML = `<div class="empty"><span class="ico">📋</span>${esc(msg)}</div>`;
+    return;
+  }
+
+  list.innerHTML = arr.map(m => {
+    const st = key;
+    const badgeCls = st === "reserved" ? "reserved"
+                   : st === "submitted" ? "submitted" : "approved";
+    const badgeTxt = st === "reserved" ? "محجوزة"
+                   : st === "submitted" ? "قيد المراجعة" : "معتمدة";
+    const actionHtml = st === "reserved"
+      ? `<button class="btn btn-primary btn-small" data-proof="${esc(m.completion_id)}">رفع إثبات التنفيذ</button>`
+      : st === "submitted"
+      ? `<button class="btn btn-secondary btn-small" disabled>بانتظار المراجعة</button>`
+      : `<button class="btn btn-secondary btn-small" disabled>تم اعتماد العمولة</button>`;
+    return `
+      <article class="task-card">
+        <div class="task-top">
+          <div class="task-title">${esc(m.title || "مهمة")}</div>
+          <span class="task-badge ${badgeCls}">${badgeTxt}</span>
+        </div>
+        ${m.description ? `<p class="task-desc">${esc(String(m.description).slice(0,150))}</p>` : ""}
+        <div class="task-meta">
+          <div><span>العمولة</span><strong class="money">${esc(fmtMoney(m.commission))}</strong></div>
+          <div><span>القيمة</span><strong>${esc(fmtMoney(m.value))}</strong></div>
+          <div><span>الموعد النهائي</span><strong>${esc(fmtDate(m.deadline))}</strong></div>
+        </div>
+        <div class="task-actions">${actionHtml}</div>
+      </article>
+    `;
+  }).join("");
+
+  list.querySelectorAll("[data-proof]").forEach(btn => {
+    btn.addEventListener("click", () => openProofSheet(btn.dataset.proof));
+  });
+}
+
+/* ---------- Submit proof ---------- */
+function openProofSheet(completionId) {
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+    <p>ارفع إثبات تنفيذ المهمة (رابط صورة أو ملف على Google Drive أو Imgur).</p>
+    <label class="field">رابط الإثبات
+      <input type="url" id="proofUrl" placeholder="https://..." dir="ltr" />
+    </label>
+    <label class="field">ملاحظات (اختياري)
+      <textarea id="proofNotes" placeholder="أي تفاصيل إضافية للمشرف"></textarea>
+    </label>
+    <button class="btn btn-primary btn-block" id="proofSubmit">إرسال الإثبات</button>
+  `;
+  openSheet("رفع إثبات التنفيذ", wrap);
+  wrap.querySelector("#proofSubmit").addEventListener("click", async () => {
+    const url = wrap.querySelector("#proofUrl").value.trim();
+    const notes = wrap.querySelector("#proofNotes").value.trim();
+    if (!url) { toast("يرجى إدخال رابط الإثبات.", "err"); return; }
+    const btn = wrap.querySelector("#proofSubmit");
+    btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
+    const r = await api("submitProof", {
+      member_id: state.member.id,
+      completion_id: completionId,
+      proof_url: url,
+      notes
+    });
+    btn.disabled = false; btn.textContent = "إرسال الإثبات";
+    if (r.ok) {
+      toast(r.message || "تم إرسال الإثبات للمراجعة.", "ok");
+      closeSheet();
+      await loadMyTasks();
+      state.myFilter = "submitted";
+      $$("#myTaskFilters .chip").forEach(c => c.classList.toggle("is-active", c.dataset.mfilter === "submitted"));
+      renderMyTasks();
+    } else {
+      toast(r.message || "تعذر إرسال الإثبات.", "err");
+    }
+  });
+}
+
+/* ---------- Balance ---------- */
+$("#refreshBalance").addEventListener("click", loadBalance);
+$("#withdrawBtn").addEventListener("click", openWithdrawSheet);
+
+async function loadBalance() {
+  if (!state.member) return;
+  const r = await api("getBalance", { member_id: state.member.id });
+
+  if (r.ok) {
+    state.balance = {
+      current: Number(r.current || 0),
+      total: Number(r.total || 0),
+      approved_count: Number(r.approved_count || 0),
+      ready: !!r.ready,
+      withdrawals: Array.isArray(r.withdrawals) ? r.withdrawals : []
+    };
+  } else {
+    state.balance = { current:0, total:0, approved_count:0, ready:false, withdrawals:[] };
+    if (r.offline) {
+      $("#withdrawalsList").innerHTML = `<div class="empty"><span class="ico">🔌</span>لم يتم ربط Google Apps Script بعد.</div>`;
+    }
+  }
+  renderBalance();
+}
+
+function renderBalance() {
+  const b = state.balance || { current:0, total:0, approved_count:0, ready:false, withdrawals:[] };
+  $("#balanceAmount").textContent = fmtMoney(b.current);
+  $("#totalEarned").textContent = fmtMoney(b.total);
+  $("#approvedCount").textContent = b.approved_count;
+
+  const status = $("#balanceStatus");
+  if (b.ready) {
+    status.textContent = "جاهز للسحب ✓";
+    $("#withdrawBtn").disabled = false;
+    $("#withdrawBtn").textContent = "طلب السحب";
+  } else {
+    status.textContent = b.current > 0 ? "غير متاح للسحب حاليًا" : "لا يوجد رصيد بعد";
+    $("#withdrawBtn").disabled = true;
+    $("#withdrawBtn").textContent = "طلب السحب (غير متاح حاليًا)";
+  }
+
+  const wl = $("#withdrawalsList");
+  if (!b.withdrawals.length) {
+    wl.innerHTML = `<div class="empty"><span class="ico">🧾</span>لا توجد طلبات سحب سابقة.</div>`;
+  } else {
+    wl.innerHTML = b.withdrawals.map(w => {
+      const s = String(w.status || "").toLowerCase();
+      const cls = s === "paid" ? "approved" : s === "rejected" ? "rejected" : "submitted";
+      const txt = s === "paid" ? "مدفوع" : s === "rejected" ? "مرفوض" : "قيد المعالجة";
+      return `
+        <article class="task-card">
+          <div class="task-top">
+            <div class="task-title">طلب سحب #${esc(w.id ?? "—")}</div>
+            <span class="task-badge ${cls}">${txt}</span>
+          </div>
+          <div class="task-meta">
+            <div><span>المبلغ</span><strong class="money">${esc(fmtMoney(w.amount))}</strong></div>
+            <div><span>الطريقة</span><strong>${esc(w.method || "—")}</strong></div>
+            <div><span>التاريخ</span><strong>${esc(fmtDate(w.created_at))}</strong></div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+}
+
+function openWithdrawSheet() {
+  const b = state.balance || { current:0 };
+  if (!b.ready) { toast("السحب غير متاح حاليًا.", "err"); return; }
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+    <p>الرصيد المتاح للسحب: <strong>${esc(fmtMoney(b.current))} $</strong></p>
+    <label class="field">المبلغ
+      <input type="number" id="wAmount" min="1" step="0.01" value="${esc(b.current)}" />
+    </label>
+    <label class="field">طريقة الدفع
+      <select id="wMethod">
+        <option value="usdt">USDT</option>
+        <option value="paypal">PayPal</option>
+        <option value="bank">تحويل بنكي</option>
+        <option value="other">أخرى</option>
+      </select>
+    </label>
+    <label class="field">حساب الاستلام
+      <input type="text" id="wAccount" dir="ltr" placeholder="رقم المحفظة أو الحساب" />
+    </label>
+    <button class="btn btn-primary btn-block" id="wSubmit">تأكيد الطلب</button>
+  `;
+  openSheet("طلب السحب", wrap);
+  wrap.querySelector("#wSubmit").addEventListener("click", async () => {
+    const amount = Number(wrap.querySelector("#wAmount").value);
+    const method = wrap.querySelector("#wMethod").value;
+    const account = wrap.querySelector("#wAccount").value.trim();
+    if (!amount || amount <= 0) { toast("يرجى إدخال مبلغ صحيح.", "err"); return; }
+    if (amount > b.current) { toast("المبلغ أكبر من الرصيد المتاح.", "err"); return; }
+    if (!account) { toast("يرجى إدخال حساب الاستلام.", "err"); return; }
+    const btn = wrap.querySelector("#wSubmit");
+    btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
+    const r = await api("requestWithdraw", {
+      member_id: state.member.id,
+      amount, method, account
+    });
+    btn.disabled = false; btn.textContent = "تأكيد الطلب";
+    if (r.ok) {
+      toast(r.message || "تم تسجيل طلب السحب.", "ok");
+      closeSheet();
+      await loadBalance();
+    } else {
+      toast(r.message || "تعذر إرسال الطلب.", "err");
+    }
+  });
+}
+
+/* ---------- Account ---------- */
+function renderAccount() {
+  const m = state.member; if (!m) return;
+  $("#pName").textContent = m.name || "—";
+  $("#pId").textContent = m.id ?? "—";
+  $("#pCountry").textContent = m.country || "—";
+  $("#pTelegram").textContent = m.telegram || "—";
+
+  const s = (m.status || "").toLowerCase();
+  $("#pStatus").textContent =
+    s === "active" || s === "مفعل" ? "مفعل"
+    : s === "pending" || s === "بانتظار التفعيل" ? "بانتظار التفعيل"
+    : s === "suspended" || s === "موقوف" ? "موقوف"
+    : (m.status || "غير معروف");
+
+  $("#pSupervisor").textContent = m.supervisor || "—";
+  const contact = m.supervisor_contact || "";
+  $("#pSupervisorContact").textContent = contact || "—";
+
+  const link = $("#contactSupervisor");
+  if (contact) {
+    link.href = contact.startsWith("http") ? contact
+      : contact.startsWith("@") ? "https://t.me/" + contact.slice(1)
+      : "mailto:" + contact;
+    link.hidden = false;
+  } else {
+    link.href = TELEGRAM_FALLBACK;
+    link.hidden = false;
+  }
+}
+
+$("#logoutBtn").addEventListener("click", () => {
+  if (!confirm("هل تريد تسجيل الخروج؟")) return;
+  clearSession();
+  switchAuth("login");
+  toast("تم تسجيل الخروج.", "ok");
+});
+
+/* ---------- Global refresh ---------- */
+$("#refreshBtn").addEventListener("click", async () => {
+  if (!state.member) return;
+  toast("جارٍ التحديث…");
+  const r = await api("getProfile", { member_id: state.member.id });
+  if (r.ok && r.member) state.member = r.member;
+  renderSession();
+  await loadAll();
+  toast("تم التحديث.", "ok");
+});
+
+/* ---------- Install PWA ---------- */
+const installBtn = $("#installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  state.installPrompt = e;
+  installBtn.hidden = false;
+});
+window.addEventListener("appinstalled", () => {
+  state.installPrompt = null;
+  installBtn.hidden = true;
+  toast("تم تثبيت التطبيق بنجاح.", "ok");
+});
+installBtn.addEventListener("click", async () => {
+  if (!state.installPrompt) {
+    toast("التثبيت غير متاح في هذا المتصفح حاليًا.");
+    return;
+  }
+  state.installPrompt.prompt();
+  const choice = await state.installPrompt.userChoice;
+  state.installPrompt = null;
+  if (choice && choice.outcome === "accepted") installBtn.hidden = true;
+});
+if (window.matchMedia("(display-mode: standalone)").matches) {
+  installBtn.hidden = true;
+}
+
+/* ---------- Service worker ---------- */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch(() => {});
+  });
+}
+
+/* ---------- Offline banner ---------- */
+if (!API_URL) $("#offlineBanner").hidden = false;
+
+/* ---------- Init ---------- */
+(async function init() {
+  const storedId = getStoredId();
+  if (storedId) {
+    if (API_URL) {
+      const r = await api("getProfile", { member_id: storedId });
+      if (r.ok && r.member) {
+        setSession(r.member);
+        await loadAll();
+      } else {
+        clearSession();
+      }
+    } else {
+      // لا يوجد API بعد — امسح الجلسة لعرض شاشة الدخول
+      clearSession();
+    }
+  } else {
+    renderSession();
+  }
+  switchTab("tasks");
+})();
+</script>
+
+</body>
+</html>
